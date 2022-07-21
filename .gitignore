@@ -1,0 +1,6 @@
+.vs
+x64
+*.vcxproj
+*.filters
+*.user
+*.opendb
