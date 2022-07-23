@@ -1,0 +1,11 @@
+
+
+>>  Issue caused due to forgetting to render SDL_CreateRenderer()
+
+>> Properly use wrapper class
+
+>> Put grenderer inside of the game class i guess
+
+>>IF we put grenderer inside of the game class then we wont be able to use it on texture class
+>> + making a renderer in a textureClass will be a waste of resources as every object would have its own renderer, 
+>>Needs a solution which utilizes reusability
