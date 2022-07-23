@@ -49,6 +49,7 @@ void Game::init(const char *title, int x, int y, int w, int h, Uint32 flags) {
 			gRenderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 		}
 		//SDL_Delay(2000);
+		//SDL_RenderSetScale(gRenderer, (float)screenSurface->w/4, (float)screenSurface->h/4);
 		loadGlobalText(); //call here
 		gameLoop();
 
@@ -111,8 +112,10 @@ bool textureClass::loadFromRenderedText(std::string textureText, SDL_Color textC
 		}
 
 		//Get rid of old surface
+		SDL_Rect WelcomeText;
+		WelcomeText = { textSurface->w / 4,textSurface->h *6,textSurface->w  ,textSurface->h *2  };
 		SDL_FreeSurface(textSurface);
-		SDL_RenderCopy(gRenderer, mTexture, NULL, NULL);
+		SDL_RenderCopy(gRenderer, mTexture, NULL, &WelcomeText);
 		SDL_RenderPresent(gRenderer);
 	}
 
