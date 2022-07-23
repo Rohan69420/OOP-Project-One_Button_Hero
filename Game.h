@@ -3,6 +3,13 @@
 #include <SDL_image.h>
 #include <SDL_ttf.h>
 #include <iostream>
+#include "TextureManager.h"
+
+using namespace std;
+
+// BEST IDEA TO NEVER INCLUDE DEFINITIONS IN HEADER FILES!!!!! MAIN CAUSE OF ERRORS
+
+//SDL_Renderer* gRenderer;
 
 enum class GameState {
 	PLAY,
@@ -25,19 +32,15 @@ public:
 	void draw();
 	void gameLoop();
 	void handleEvents();
+    void loadGlobalText();
 private:
 	int screenW, screenH;
 	SDL_Window* window;
 	SDL_Renderer* renderer;
+	SDL_Surface* screenSurface;
 	GameState gamestate;
 };
-class textureClass{
-private:
-	int _textureW,_textureH;
-public:
-	textureClass();
-	void DisplayLoadedMessage();
-};
+
 class surfaceClass{};
 class rectangleClass {
 private:
