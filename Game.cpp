@@ -36,7 +36,8 @@ void Game::init(const char *title, int x, int y, int w, int h, Uint32 flags) {
 		// 
 		//loading global ttf files
 		//textureClass gTextTexture;
-		loadGlobalText();
+
+
 		window=SDL_CreateWindow(title, x, y, w, h,flags);
 		if (window == NULL) {
 			cout << "Unable to create window! Error code:" << SDL_GetError() << endl;
@@ -44,16 +45,17 @@ void Game::init(const char *title, int x, int y, int w, int h, Uint32 flags) {
 		else
 		{
 			screenSurface = SDL_GetWindowSurface(window);
-			renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+			//renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 			gRenderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 		}
 		//SDL_Delay(2000);
+		loadGlobalText(); //call here
 		gameLoop();
 
 	}
 }
 void Game::gameLoop() {
-	draw();
+	//draw();
 	while (gamestate != GameState::EXIT) {
 		handleEvents();
 	}
@@ -104,12 +106,14 @@ bool textureClass::loadFromRenderedText(std::string textureText, SDL_Color textC
 		else
 		{
 			//Get image dimensions
-			mWidth = textSurface->w;
-			mHeight = textSurface->h;
+			mWidth = textSurface->w/2;
+			mHeight = textSurface->h/2;
 		}
 
 		//Get rid of old surface
 		SDL_FreeSurface(textSurface);
+		SDL_RenderCopy(gRenderer, mTexture, NULL, NULL);
+		SDL_RenderPresent(gRenderer);
 	}
 
 	//Return success
@@ -127,6 +131,7 @@ void Game::loadGlobalText() {
 		if (!gTextTexture.loadFromRenderedText("Welcome to One Button Hero", textColor)) {
 			cout << "Failed to render texture." << endl;
 		}
+		
 	}
 
 }
