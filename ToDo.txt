@@ -1,3 +1,9 @@
->> Add a loading screen
+>> Add a loading screen(On progress)
 
->>
+>>Fix the proportion using clips
+
+>>Use mixer to load some tunes. 
+Details: 
+1. Coin pick up sound once the progress bar is full
+2. Welcome tune, infinity loop in homescreen
+3. Mario pipe transition sound type transition music for game transition

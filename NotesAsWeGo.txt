@@ -14,4 +14,10 @@
 
 >>Need to add SDL Rect as data member in texture class (done)
 
->>
+>>Have to deal with threads,processes and mutex for loading screens so we do it simply and manually in three chunks
+
+>>Went savage on the loading screen, clean up as OOP later on
+
+>>Delayed the welcome text until later on (yet to be resolved)
+
+>>Use clip to resize the welcome logo with accordance to the screensize, out of proportion atm()
