@@ -46,21 +46,24 @@ void Game::init(const char *title, int x, int y, int w, int h, Uint32 flags) {
 		else
 		{
 			//load window icon
-			LoadAppIcon();
+			
 			
 
 			screenSurface = SDL_GetWindowSurface(window);
 			//renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 			gRenderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+			LoadAppIcon();
+			
+			LoadAppIcon();
 			LoadingScreen();
 			
 		}
 		//SDL_Delay(2000);
 		//SDL_RenderSetScale(gRenderer, (float)screenSurface->w/4, (float)screenSurface->h/4);
 
-		//cclear the renderer before this, or move the welcome text to another corner
+		//>>>>>>>>>cclear the renderer before this, or move the welcome text to another corner<<<<<<<<<<<<
 
-		loadGlobalText(); //call here
+		//loadGlobalText(); //call here
 		gameLoop();
 
 	}
@@ -151,21 +154,27 @@ void Game::loadGlobalText() {
 void Game::LoadAppIcon() {
 	SDL_SetWindowIcon(window, IMG_Load("images/icon.bmp"));
 	cout << "Load app icon launched" << endl;
-
+	LoadingScreen();
 	//loading screen
 }
 void Game::LoadingScreen() {
 	if (!launchedLoadingScreen) {
 
-		ProgressBarOuter = { screenSurface->w / 6,static_cast<int>(screenSurface->h / 1.5),static_cast<int>(screenSurface->w / 1.5),10 };
-		ProgressBarInner = { ProgressBarOuter.x + 5,ProgressBarOuter.y ,0 / 3,ProgressBarOuter.h - 2 };
-		launchedLoadingScreen = true;
-		//first logo launch
+		
 
 		textureClass BigLogo;
 		BigLogo.loadFromFile("images/LOGO.png");
-		BigLogo.render(static_cast<int>(screenSurface->w / 3), static_cast<int>(screenSurface->h / 6), NULL, NULL,NULL, SDL_FLIP_NONE);
+		//temporary clipping solution
+		SDL_Rect clipper;
+		clipper = { 0,0,screenSurface->w / 3,screenSurface->w / 3 };
+		BigLogo.render(screenSurface->w / 3, screenSurface->h / 6, &clipper, NULL,NULL, SDL_FLIP_NONE);
 
+		ProgressBarOuter = { screenSurface->w / 6,screenSurface->h / 6 + clipper.h + 20 ,static_cast<int>(screenSurface->w / 1.5),10 };
+		//y position set such that it is always below the big logo, inner rect y-pos is same as outer y-pos
+		
+		ProgressBarInner = { ProgressBarOuter.x + 5,ProgressBarOuter.y ,0 / 3,ProgressBarOuter.h - 2 };
+		launchedLoadingScreen = true;
+		//first logo launch
 		
 	}
 	//position the SDL_Rect, do it the savage way and clean up late
@@ -235,7 +244,8 @@ void textureClass::render(int x, int y, SDL_Rect* clip, double angle, SDL_Point*
 	}
 
 	//Render to screen
-	SDL_RenderCopyEx(gRenderer, mTexture, clip, &renderQuad, angle, center, flip);
+	SDL_RenderCopyEx(gRenderer, mTexture, NULL, &renderQuad, angle, center, flip);
+	//REPLACED SRCRECT FROM CLIP TO NULL
 	//USE SDL_FLIP_NONE for no flip
 	//USE NULL for center to set rotating point at center of the texture.
 }
