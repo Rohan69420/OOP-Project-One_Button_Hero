@@ -57,6 +57,9 @@ void Game::init(const char *title, int x, int y, int w, int h, Uint32 flags) {
 		}
 		//SDL_Delay(2000);
 		//SDL_RenderSetScale(gRenderer, (float)screenSurface->w/4, (float)screenSurface->h/4);
+
+		//cclear the renderer before this, or move the welcome text to another corner
+
 		loadGlobalText(); //call here
 		gameLoop();
 
@@ -157,6 +160,13 @@ void Game::LoadingScreen() {
 		ProgressBarOuter = { screenSurface->w / 6,static_cast<int>(screenSurface->h / 1.5),static_cast<int>(screenSurface->w / 1.5),10 };
 		ProgressBarInner = { ProgressBarOuter.x + 5,ProgressBarOuter.y ,0 / 3,ProgressBarOuter.h - 2 };
 		launchedLoadingScreen = true;
+		//first logo launch
+
+		textureClass BigLogo;
+		BigLogo.loadFromFile("images/LOGO.png");
+		BigLogo.render(static_cast<int>(screenSurface->w / 3), static_cast<int>(screenSurface->h / 6), NULL, NULL,NULL, SDL_FLIP_NONE);
+
+		
 	}
 	//position the SDL_Rect, do it the savage way and clean up late
 
@@ -171,4 +181,61 @@ void Game::LoadingScreen() {
 		//do we need to render copy with render fill? turns out the answer is a no
 		SDL_RenderPresent(gRenderer);
 	}
+}
+bool textureClass::loadFromFile(string path) {
+
+	//free();
+	//NOT defined yet
+
+	//The final texture
+	SDL_Texture* newTexture = NULL;
+
+	//Load image at specified path
+	SDL_Surface* loadedSurface = IMG_Load(path.c_str());
+	if (loadedSurface == NULL)
+	{
+		printf("Unable to load image %s! SDL_image Error: %s\n", path.c_str(), IMG_GetError());
+	}
+	else
+	{
+		//Color key image
+		SDL_SetColorKey(loadedSurface, SDL_TRUE, SDL_MapRGB(loadedSurface->format, 0, 0xFF, 0xFF));
+
+		//Create texture from surface pixels
+		newTexture = SDL_CreateTextureFromSurface(gRenderer, loadedSurface);
+		if (newTexture == NULL) //check this part for error, gave error although working last time, BUT NEED THIS TO GET DIMENSIONS
+		{
+			printf("Unable to create texture from %s! SDL Error: %s\n", path.c_str(), SDL_GetError());
+		}
+		else
+		{
+			//Get image dimensions
+			mWidth = loadedSurface->w;
+			mHeight = loadedSurface->h;
+		}
+
+		//Get rid of old loaded surface
+		SDL_FreeSurface(loadedSurface);
+	}
+
+	//Return success
+	mTexture = newTexture;
+	return mTexture != NULL;
+}
+void textureClass::render(int x, int y, SDL_Rect* clip, double angle, SDL_Point* center, SDL_RendererFlip flip)
+{
+	//Set rendering space and render to screen
+	SDL_Rect renderQuad = { x, y, mWidth, mHeight };
+
+	//Set clip rendering dimensions
+	if (clip != NULL)
+	{
+		renderQuad.w = clip->w;
+		renderQuad.h = clip->h;
+	}
+
+	//Render to screen
+	SDL_RenderCopyEx(gRenderer, mTexture, clip, &renderQuad, angle, center, flip);
+	//USE SDL_FLIP_NONE for no flip
+	//USE NULL for center to set rotating point at center of the texture.
 }
