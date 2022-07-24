@@ -20,4 +20,6 @@
 
 >>Delayed the welcome text until later on (yet to be resolved)
 
->>Use clip to resize the welcome logo with accordance to the screensize, out of proportion atm()
+>>Use clip to resize the welcome logo with accordance to the screensize, out of proportion atm(used temporary rect/bad for maintenance)
+
+>>Need to position y-pos of progress bar with respect to the big logo (done)
