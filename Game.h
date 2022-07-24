@@ -33,13 +33,18 @@ public:
 	void gameLoop();
 	void handleEvents();
     void loadGlobalText();
-	void LoadWindowIcon();
+	void LoadAppIcon();
+	void LoadingScreen();
 private:
 	int screenW, screenH;
 	SDL_Window* window;
 	SDL_Renderer* renderer;
 	SDL_Surface* screenSurface;
 	GameState gamestate;
+
+	//loading screen specific
+	bool launchedLoadingScreen;
+	SDL_Rect ProgressBarOuter, ProgressBarInner;
 };
 
 class surfaceClass{};

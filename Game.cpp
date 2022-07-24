@@ -13,6 +13,7 @@ Game::Game() { //constructor
 	screenH = 400; //screen width and height initialization
 	gamestate = GameState::PLAY;
 	//gfont = NULL;
+	launchedLoadingScreen = false;
 }
 Game::~Game() { //destructor
 	SDL_DestroyWindow(window);
@@ -45,11 +46,14 @@ void Game::init(const char *title, int x, int y, int w, int h, Uint32 flags) {
 		else
 		{
 			//load window icon
-			LoadWindowIcon();
+			LoadAppIcon();
+			
 
 			screenSurface = SDL_GetWindowSurface(window);
 			//renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 			gRenderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+			LoadingScreen();
+			
 		}
 		//SDL_Delay(2000);
 		//SDL_RenderSetScale(gRenderer, (float)screenSurface->w/4, (float)screenSurface->h/4);
@@ -141,7 +145,30 @@ void Game::loadGlobalText() {
 	}
 
 }
-void Game::LoadWindowIcon() {
+void Game::LoadAppIcon() {
 	SDL_SetWindowIcon(window, IMG_Load("images/icon.bmp"));
-	cout << "Load icon launched" << endl;
+	cout << "Load app icon launched" << endl;
+
+	//loading screen
+}
+void Game::LoadingScreen() {
+	if (!launchedLoadingScreen) {
+
+		ProgressBarOuter = { screenSurface->w / 6,static_cast<int>(screenSurface->h / 1.5),static_cast<int>(screenSurface->w / 1.5),10 };
+		ProgressBarInner = { ProgressBarOuter.x + 5,ProgressBarOuter.y ,0 / 3,ProgressBarOuter.h - 2 };
+		launchedLoadingScreen = true;
+	}
+	//position the SDL_Rect, do it the savage way and clean up late
+
+	//should use sdl renderfill rect orrrrrrrr
+	//i mean yeah renderer would be better than writing on the surface
+	if (ProgressBarInner.w <= ProgressBarOuter.w) {
+		ProgressBarInner.w += ProgressBarOuter.w / 3;
+		SDL_SetRenderDrawColor(gRenderer, 255, 255, 255, 255);
+		SDL_RenderFillRect(gRenderer, &ProgressBarOuter);
+		SDL_SetRenderDrawColor(gRenderer, 0, 255, 0, 255);
+		SDL_RenderFillRect(gRenderer, &ProgressBarInner);
+		//do we need to render copy with render fill? turns out the answer is a no
+		SDL_RenderPresent(gRenderer);
+	}
 }
