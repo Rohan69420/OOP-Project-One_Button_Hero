@@ -11,3 +11,7 @@
 >>Needs a solution which utilizes reusability
 
 >>Renderer being invalid (resolved: fix; had accidentally called the render function before creating renderer!)
+
+>>Need to add SDL Rect as data member in texture class (done)
+
+>>
