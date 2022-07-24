@@ -33,6 +33,7 @@ public:
 	void gameLoop();
 	void handleEvents();
     void loadGlobalText();
+	void LoadWindowIcon();
 private:
 	int screenW, screenH;
 	SDL_Window* window;

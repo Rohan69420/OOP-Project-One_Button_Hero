@@ -44,6 +44,9 @@ void Game::init(const char *title, int x, int y, int w, int h, Uint32 flags) {
 		}
 		else
 		{
+			//load window icon
+			LoadWindowIcon();
+
 			screenSurface = SDL_GetWindowSurface(window);
 			//renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 			gRenderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
@@ -137,4 +140,8 @@ void Game::loadGlobalText() {
 		
 	}
 
+}
+void Game::LoadWindowIcon() {
+	SDL_SetWindowIcon(window, IMG_Load("images/icon.bmp"));
+	cout << "Load icon launched" << endl;
 }
