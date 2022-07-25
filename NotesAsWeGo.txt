@@ -23,3 +23,8 @@
 >>Use clip to resize the welcome logo with accordance to the screensize, out of proportion atm(used temporary rect/bad for maintenance)
 
 >>Need to position y-pos of progress bar with respect to the big logo (done)
+
+>>TIP: IF YOU EVER WANT TO ADJUST VOLUME: "Use Mix_Volume(channel, volume) , or if you are using the special music-API, use Mix_VolumeMusic(volume). You cannot make things louder, as volume always defaults to the maximum (128)."
+
+
+>>Off topic recall: Can opt to key instead of transparency mode if it helps

@@ -7,3 +7,9 @@ Details:
 1. Coin pick up sound once the progress bar is full
 2. Welcome tune, infinity loop in homescreen
 3. Mario pipe transition sound type transition music for game transition
+
+>>Need to configure system sleep, thread sleep (configured!)
+
+>>Need to configure, window resized handler, recommend we resize before proceeding to the game
+
+>>Working on sound and texture as seperate class, should combine it into a single class??
