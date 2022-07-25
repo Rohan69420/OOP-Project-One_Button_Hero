@@ -192,7 +192,8 @@ bool textureClass::loadFromRenderedText(std::string textureText, SDL_Color textC
 }
 
 void Game::loadGlobalText() {
-	gfont = TTF_OpenFont("ka1.ttf", 28);
+	gfont = TTF_OpenFont("ka1.ttf", 72); //ptsize is size of font 
+	
 	if (gfont == NULL) {
 		cout << "Failed to load the ttf file. Error code" << TTF_GetError() << endl;
 	}
@@ -205,16 +206,15 @@ void Game::loadWelcomeText() {
 	if (!WelcomeOBH.loadFromRenderedText("Welcome to One Button Hero", textColor)) {
 		cout << "Failed to render texture." << endl;
 	}
-
+	gfont = TTF_OpenFont("ka1.ttf", 48);
 	if (!PressStart.loadFromRenderedText("Press any button to start.", textColor)) {
 		cout << "Failed to render texture." << endl;
 	}
 
-	SDL_Rect WelcomeText = { WelcomeOBH.getWidth() / 4, screenSurface->h / 5,static_cast<int>(screenSurface->w/1.2),WelcomeOBH.getHeight() * 3};
-	SDL_Rect StartText = { static_cast<int>(screenSurface->w /3), static_cast<int>(screenSurface->h / 2.1),screenSurface->w/3,screenSurface->h/14 }; //we dont care about x and y when we use it as clip?
-	WelcomeOBH.render(WelcomeText.x, WelcomeText.y, &WelcomeText, NULL, NULL, SDL_FLIP_NONE);
+	//sorted that we dont need to resize and can use point size instead
+	WelcomeOBH.render(screenSurface->w/16, screenSurface->h / 3);  //default argument enabled
 	//positioned such as the welcome text is rendered below the press to start
-	PressStart.render(StartText.x, StartText.y, &StartText, NULL, NULL, SDL_FLIP_NONE);
+	PressStart.render(static_cast<int>(screenSurface->w / 5), static_cast<int>(screenSurface->h / 1.5));
 	//
 	//SDL_RenderCopy(gRenderer, mTexture, NULL, &WelcomeText); //<here it is being rendered
 	SDL_RenderPresent(gRenderer);
@@ -236,8 +236,8 @@ void Game::LoadingScreen() {
 		BigLogo.loadFromFile("images/LOGO.png");
 		//temporary clipping solution
 		SDL_Rect clipper;
-		clipper = { 0,0,screenSurface->w / 3,screenSurface->w / 3 };
-		BigLogo.render(screenSurface->w / 3, screenSurface->h / 6, &clipper, NULL,NULL, SDL_FLIP_NONE);
+		clipper = { screenSurface->w / 3,screenSurface->h / 6,screenSurface->w / 3,screenSurface->w / 3 };
+		BigLogo.renderResized(&clipper); //default args
 
 		ProgressBarOuter = { screenSurface->w / 6,screenSurface->h / 6 + clipper.h + 20 ,static_cast<int>(screenSurface->w / 1.5),10 };
 		//y position set such that it is always below the big logo, inner rect y-pos is same as outer y-pos
@@ -314,10 +314,14 @@ void textureClass::render(int x, int y, SDL_Rect* clip, double angle, SDL_Point*
 	}
 
 	//Render to screen
-	SDL_RenderCopyEx(gRenderer, mTexture, NULL, &renderQuad, angle, center, flip);
+	SDL_RenderCopyEx(gRenderer, mTexture, clip, &renderQuad, angle, center, flip);
 	//REPLACED SRCRECT FROM CLIP TO NULL
 	//USE SDL_FLIP_NONE for no flip
 	//USE NULL for center to set rotating point at center of the texture.
+}
+void textureClass::renderResized(SDL_Rect* Desti, double angle, SDL_Point* center, SDL_RendererFlip flip) {
+	SDL_RenderCopyEx(gRenderer, mTexture, NULL, Desti, angle, center, flip);
+	SDL_RenderPresent(gRenderer);
 }
 void Game::ClearGlobalRenderer() {
 	SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, 255);
