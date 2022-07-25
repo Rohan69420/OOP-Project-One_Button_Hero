@@ -4,6 +4,7 @@
 #include <SDL_ttf.h>
 #include <iostream>
 #include "TextureManager.h"
+#include "SoundManager.h"
 
 using namespace std;
 
@@ -35,6 +36,8 @@ public:
     void loadGlobalText();
 	void LoadAppIcon();
 	void LoadingScreen();
+	void ClearGlobalRenderer();
+	void loadWelcomeText();
 private:
 	int screenW, screenH;
 	SDL_Window* window;
