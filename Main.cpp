@@ -2,8 +2,9 @@
 #include <Windows.h>
 
 
+
 int main(int argc, char* argv[]) {
-	//HWND windowHandle = GetConsoleWindow();
+	HWND windowHandle = GetConsoleWindow();
 	//ShowWindow(windowHandle, SW_HIDE);
 
 	Game game;
