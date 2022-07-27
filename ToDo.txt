@@ -12,4 +12,8 @@ Details:
 
 >>Need to configure, window resized handler, recommend we resize before proceeding to the game
 
->>Working on sound and texture as seperate class, should combine it into a single class??
+>>Working on sound and texture as seperate class, should combine it into a single class?? (seperate sound class but global variable made )
+
+>>Create a enum to know which stage of map we are in so that we can have varying mouse positions (dont worry about oop rn)
+
+>>Add a resizing feature to the welcome screen.
