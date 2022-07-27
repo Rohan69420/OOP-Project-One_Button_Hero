@@ -23,6 +23,7 @@ Game::Game() { //constructor
 	gamestate = GameState::PLAY;
 	gMusic = NULL;
 	//gfont = NULL;
+	WhichMap = WELCOMESCREEN;
 	launchedLoadingScreen = false;
 }
 Game::~Game() { //destructor
@@ -138,6 +139,29 @@ void Game::handleEvents() {
 				}
 			}
 			break;
+
+			//we shall nest the map conditionals inside here so that global keypresses still remain functional
+			//switch (WhichMap) {
+			//case WELCOMESCREEN:
+				//resizing restricted to the welcome screen for now, but should be doable if we set variables based on screensurface
+				//if (evnt.type == SDL_WINDOWEVENT_RESIZED) {
+		case SDL_WINDOWEVENT:
+			if (evnt.window.event == SDL_WINDOWEVENT_RESIZED) {
+				screenSurface = SDL_GetWindowSurface(window);
+
+				//lets see if this shit works
+				SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, reinterpret_cast<char*>(0));
+				SDL_RenderSetLogicalSize(gRenderer, screenSurface->w, screenSurface->h);
+				loadWelcomeText();
+				//SDL_RenderPresent(gRenderer);
+				//loadWelcomeText(); //issue being that the text is reset when resized AAA
+			//	SDL_UpdateWindowSurface(window);
+				cout << "Window resized!" << endl;
+				break;
+			}
+				//}
+				//break;
+			//}
 		}
 	}
 }
