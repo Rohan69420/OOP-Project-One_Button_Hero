@@ -1,9 +1,11 @@
 #include <Game.h> 
 #include <chrono>
 #include <thread>
+#include <iomanip>
 
 #define SPRITEW 60
 #define SPRITEH 59
+#define TIMERWIDTH 360
 
 
 using namespace std; 
@@ -19,8 +21,10 @@ std::chrono::milliseconds timespan(500);
 TTF_Font* gfont;
 //TTF_Font* globalFont; //Global font declaration, works here?
 SDL_Renderer* gRenderer;
-textureClass gTextTexture,gSpriteSheetTexture;
+textureClass gTextTexture,gSpriteSheetTexture,gTimer; //maybe this can go inside the Game class?
 Mix_Music* gMusic;
+std::stringstream timeInText; ///for the timer text
+SDL_Color BlackColor = { 0,0,0 };
 
 
 Game::Game() { //constructor
@@ -34,6 +38,9 @@ Game::Game() { //constructor
 	frame = 0;
 	//SpriteClips = new SDL_Rect[STATIONARY_ANIMATION_FRAMES]; //LOOKS LIKE IT WORKED
 
+	startTime = 0;
+	tickStarted = false;
+
 	launchedLoadingScreen = false;
 }
 Game::~Game() { //destructor
@@ -41,7 +48,7 @@ Game::~Game() { //destructor
 	SDL_Quit();
 }
 void Game::run() {
-	init("One Button Hero",50,50,screenW,screenH,SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+	init("One Button Hero",50,50,screenW,screenH,SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE ); //CAN DO FULLSCREEN MODE HERE
 }
 void Game::init(const char *title, int x, int y, int w, int h, Uint32 flags) {
 	//initialize everything
@@ -85,7 +92,7 @@ void Game::init(const char *title, int x, int y, int w, int h, Uint32 flags) {
 			
 
 			screenSurface = SDL_GetWindowSurface(window);
-			//renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+			//renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC );
 			gRenderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 			SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, reinterpret_cast<char*>(0));
 			SDL_RenderSetLogicalSize(gRenderer, screenW, screenH);
@@ -118,6 +125,10 @@ void Game::gameLoop() {
 	while (gamestate != GameState::EXIT) {
 		handleEvents();
 		if (MapRunning) {
+			if (!tickStarted) {
+				startTime = SDL_GetTicks();
+				tickStarted = true;
+			}
 			draw();
 		}
 	}
@@ -189,6 +200,8 @@ void Game::handleEvents() {
 	}
 }
 void Game::draw() {
+
+	
 	// Clear screen
 	MapRunning = true;
 		SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -197,6 +210,13 @@ void Game::draw() {
 	//Render current frame
 	SDL_Rect* currentClip = &SpriteClips[frame / 8]; //adjust framerate
 	gSpriteSheetTexture.render((screenW - currentClip->w) / 2, (screenH - currentClip->h) / 2, currentClip);
+
+	
+
+	timeInText.str(""); //Lets try without his X, TURNS OUT THIS IS FOR CLEARING THE PAST TEXT?
+	timeInText << "Time passed: " << (SDL_GetTicks() - startTime) /1000<<setw(5)<<" s";
+	gTimer.loadFromRenderedText(timeInText.str().c_str(), BlackColor);
+	gTimer.render(screenW - TIMERWIDTH, 0);
 
 	//Update screen
 	SDL_RenderPresent(gRenderer);

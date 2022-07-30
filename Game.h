@@ -4,7 +4,8 @@
 #include <SDL_ttf.h>
 #include <iostream>
 #include "TextureManager.h"
-#include "SoundManager.h"\
+#include "SoundManager.h"
+#include <sstream>
 
 #define STATIONARY_ANIMATION_FRAMES 8
 
@@ -55,7 +56,10 @@ private:
 	GameState gamestate;
 	MapID WhichMap;
 	int frame;
-	bool MapRunning;
+	bool MapRunning,tickStarted;
+
+	Uint32 startTime;
+	//std::stringstream timeInText; //for time displaying on top, THIS NEEDS TO BE GLOBAL JESUS CHRIST
 
 	//loading screen specific
 	bool launchedLoadingScreen;
