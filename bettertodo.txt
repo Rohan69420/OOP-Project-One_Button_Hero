@@ -1,0 +1,5 @@
+1. Set screen size to 1140 x 600 fixed
+2. Need to add the global variables into the Game class, the unnecessary data hogging wont be an issue cause there will only
+be one game class object.
+3. I think the capping framerate part can be skipped if we have enabled render
+present vsync, which we have
