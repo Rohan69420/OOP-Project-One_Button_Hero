@@ -1,6 +1,11 @@
 #include <Game.h> 
 #include <chrono>
 #include <thread>
+
+#define SPRITEW 60
+#define SPRITEH 59
+
+
 using namespace std; 
 
 //global chrono delay
@@ -19,8 +24,8 @@ Mix_Music* gMusic;
 
 
 Game::Game() { //constructor
-	screenW = 800;
-	screenH = 400; //screen width and height initialization
+	screenW = 1140;
+	screenH = 600; //screen width and height initialization
 	gamestate = GameState::PLAY;
 	gMusic = NULL;
 	//gfont = NULL;
@@ -83,7 +88,7 @@ void Game::init(const char *title, int x, int y, int w, int h, Uint32 flags) {
 			//renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 			gRenderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 			SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, reinterpret_cast<char*>(0));
-			SDL_RenderSetLogicalSize(gRenderer, 800, 400);
+			SDL_RenderSetLogicalSize(gRenderer, screenW, screenH);
 			loadMedia();
 			LoadAppIcon();
 			
@@ -161,7 +166,7 @@ void Game::handleEvents() {
 			//case WELCOMESCREEN:
 				//resizing restricted to the welcome screen for now, but should be doable if we set variables based on screensurface
 				//if (evnt.type == SDL_WINDOWEVENT_RESIZED) {
-	/*	case SDL_WINDOWEVENT:
+		case SDL_WINDOWEVENT:
 			if (evnt.window.event == SDL_WINDOWEVENT_RESIZED) {
 				screenSurface = SDL_GetWindowSurface(window);
 
@@ -172,13 +177,14 @@ void Game::handleEvents() {
 				//SDL_RenderPresent(gRenderer);
 				//loadWelcomeText(); //issue being that the text is reset when resized AAA
 			//	SDL_UpdateWindowSurface(window);
+				cout << "Dimensions " << screenSurface->w << " x " << screenSurface->h << endl;
 				cout << "Window resized!" << endl;
 				break;
 			}
 				//}
 				//break;
 			//}
-			*/
+			
 		}
 	}
 }
@@ -273,10 +279,10 @@ void Game::loadWelcomeText() {
 	}
 
 	//sorted that we dont need to resize and can use point size instead
-	WelcomeOBH.render(screenSurface->w/16, screenSurface->h / 3);  //default argument enabled
+	WelcomeOBH.render((screenW-WelcomeOBH.getWidth())/2, (screenH-WelcomeOBH.getHeight()) / 2);  //default argument enabled
 	//positioned such as the welcome text is rendered below the press to start
-	PressStart.render(static_cast<int>(screenSurface->w / 5), static_cast<int>(screenSurface->h / 1.5));
-	//
+	PressStart.render((screenW-PressStart.getWidth()) / 2, (screenH-PressStart.getHeight()) / 2 + WelcomeOBH.getHeight() + 5);
+	//giving some clearance
 	//SDL_RenderCopy(gRenderer, mTexture, NULL, &WelcomeText); //<here it is being rendered
 	SDL_RenderPresent(gRenderer);
 	
@@ -422,7 +428,7 @@ int textureClass::getHeight() {
 	return mHeight;
 }
 bool Game::loadMedia() {
-	if (!gSpriteSheetTexture.loadFromFile("nicepng.png"))
+	if (!gSpriteSheetTexture.loadFromFile("nicepng60pxw.png"))
 	{
 		printf("Failed to load walking animation texture!\n");
 		//success = false;
@@ -431,44 +437,44 @@ bool Game::loadMedia() {
 	{
 		//Set sprite clips
 		SpriteClips[0].x = 0;
-		SpriteClips[0].y = 252;
-		SpriteClips[0].w = 127;
-		SpriteClips[0].h = 118;
+		SpriteClips[0].y = 119;
+		SpriteClips[0].w = SPRITEW;
+		SpriteClips[0].h = SPRITEH;
 
-		SpriteClips[1].x = 126;
-		SpriteClips[1].y = 252;
-		SpriteClips[1].w = 127;
-		SpriteClips[1].h = 118;
+		SpriteClips[1].x = 60;
+		SpriteClips[1].y = 119;
+		SpriteClips[1].w = SPRITEW;
+		SpriteClips[1].h = SPRITEH;
 
-		SpriteClips[2].x = 128 * 2;
-		SpriteClips[2].y = 252;
-		SpriteClips[2].w = 127;
-		SpriteClips[2].h = 118;
+		SpriteClips[2].x = 60 * 2;
+		SpriteClips[2].y = 119;
+		SpriteClips[2].w = SPRITEW;
+		SpriteClips[2].h = SPRITEH;
 
-		SpriteClips[3].x = 128 * 3;
-		SpriteClips[3].y = 252;
-		SpriteClips[3].w = 127;
-		SpriteClips[3].h = 118;
+		SpriteClips[3].x = 60 * 3;
+		SpriteClips[3].y = 119;
+		SpriteClips[3].w = SPRITEW;
+		SpriteClips[3].h = SPRITEH;
 
-		SpriteClips[4].x = 128 * 4;
-		SpriteClips[4].y = 252;
-		SpriteClips[4].w = 127;
-		SpriteClips[4].h = 118;
+		SpriteClips[4].x = 60 * 4;
+		SpriteClips[4].y = 119;
+		SpriteClips[4].w = SPRITEW;
+		SpriteClips[4].h = SPRITEH;
 
-		SpriteClips[5].x = 128 * 5;
-		SpriteClips[5].y = 252;
-		SpriteClips[5].w = 127;
-		SpriteClips[5].h = 118;
+		SpriteClips[5].x = 60 * 5;
+		SpriteClips[5].y = 119;
+		SpriteClips[5].w = SPRITEW;
+		SpriteClips[5].h = SPRITEH;
 
-		SpriteClips[6].x = 128 * 6;
-		SpriteClips[6].y = 252;
-		SpriteClips[6].w = 127;
-		SpriteClips[6].h = 118;
+		SpriteClips[6].x = 60 * 6 + 2;
+		SpriteClips[6].y = 119;
+		SpriteClips[6].w = SPRITEW;
+		SpriteClips[6].h = SPRITEH;
 
-		SpriteClips[7].x = 128 * 7 + 6;
-		SpriteClips[7].y = 252;
-		SpriteClips[7].w = 118;
-		SpriteClips[7].h = 118;
+		SpriteClips[7].x = 60 * 7 + 4;
+		SpriteClips[7].y = 119;
+		SpriteClips[7].w = SPRITEH;
+		SpriteClips[7].h = SPRITEH;
 
 	}
 		return true;
