@@ -4,13 +4,21 @@
 #include <SDL_ttf.h>
 #include <iostream>
 #include "TextureManager.h"
-#include "SoundManager.h"
+#include "SoundManager.h"\
+
+#define STATIONARY_ANIMATION_FRAMES 8
 
 using namespace std;
 
 // BEST IDEA TO NEVER INCLUDE DEFINITIONS IN HEADER FILES!!!!! MAIN CAUSE OF ERRORS
 
 //SDL_Renderer* gRenderer;
+
+//global non class enum for whichmap
+enum MapID {
+	WELCOMESCREEN,
+	TOTALMAPS
+};
 
 enum class GameState {
 	PLAY,
@@ -33,6 +41,7 @@ public:
 	void draw();
 	void gameLoop();
 	void handleEvents();
+	bool loadMedia();
     void loadGlobalText();
 	void LoadAppIcon();
 	void LoadingScreen();
@@ -44,10 +53,14 @@ private:
 	SDL_Renderer* renderer;
 	SDL_Surface* screenSurface;
 	GameState gamestate;
+	MapID WhichMap;
+	int frame;
+	bool MapRunning;
 
 	//loading screen specific
 	bool launchedLoadingScreen;
 	SDL_Rect ProgressBarOuter, ProgressBarInner;
+	SDL_Rect SpriteClips[STATIONARY_ANIMATION_FRAMES];
 };
 
 class surfaceClass{};

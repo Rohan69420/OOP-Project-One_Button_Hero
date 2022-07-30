@@ -14,8 +14,9 @@ std::chrono::milliseconds timespan(500);
 TTF_Font* gfont;
 //TTF_Font* globalFont; //Global font declaration, works here?
 SDL_Renderer* gRenderer;
-textureClass gTextTexture;
+textureClass gTextTexture,gSpriteSheetTexture;
 Mix_Music* gMusic;
+
 
 Game::Game() { //constructor
 	screenW = 800;
@@ -24,6 +25,10 @@ Game::Game() { //constructor
 	gMusic = NULL;
 	//gfont = NULL;
 	WhichMap = WELCOMESCREEN;
+	//STATIONARY_ANIMATION_FRAMES = 8;
+	frame = 0;
+	//SpriteClips = new SDL_Rect[STATIONARY_ANIMATION_FRAMES]; //LOOKS LIKE IT WORKED
+
 	launchedLoadingScreen = false;
 }
 Game::~Game() { //destructor
@@ -77,6 +82,9 @@ void Game::init(const char *title, int x, int y, int w, int h, Uint32 flags) {
 			screenSurface = SDL_GetWindowSurface(window);
 			//renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 			gRenderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+			SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, reinterpret_cast<char*>(0));
+			SDL_RenderSetLogicalSize(gRenderer, 800, 400);
+			loadMedia();
 			LoadAppIcon();
 			
 			//LoadAppIcon();
@@ -104,6 +112,9 @@ void Game::gameLoop() {
 	//draw();
 	while (gamestate != GameState::EXIT) {
 		handleEvents();
+		if (MapRunning) {
+			draw();
+		}
 	}
 }
 void Game::handleEvents() {
@@ -138,21 +149,26 @@ void Game::handleEvents() {
 					}
 				}
 			}
+			else {
+				draw();
+			}
 			break;
+
+		
 
 			//we shall nest the map conditionals inside here so that global keypresses still remain functional
 			//switch (WhichMap) {
 			//case WELCOMESCREEN:
 				//resizing restricted to the welcome screen for now, but should be doable if we set variables based on screensurface
 				//if (evnt.type == SDL_WINDOWEVENT_RESIZED) {
-		case SDL_WINDOWEVENT:
+	/*	case SDL_WINDOWEVENT:
 			if (evnt.window.event == SDL_WINDOWEVENT_RESIZED) {
 				screenSurface = SDL_GetWindowSurface(window);
 
 				//lets see if this shit works
-				SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, reinterpret_cast<char*>(0));
-				SDL_RenderSetLogicalSize(gRenderer, screenSurface->w, screenSurface->h);
-				loadWelcomeText();
+				//SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, reinterpret_cast<char*>(0));
+				//SDL_RenderSetLogicalSize(gRenderer, 800, 400); ///<-----
+				//loadWelcomeText();
 				//SDL_RenderPresent(gRenderer);
 				//loadWelcomeText(); //issue being that the text is reset when resized AAA
 			//	SDL_UpdateWindowSurface(window);
@@ -162,15 +178,36 @@ void Game::handleEvents() {
 				//}
 				//break;
 			//}
+			*/
 		}
 	}
 }
 void Game::draw() {
+	// Clear screen
+	MapRunning = true;
+		SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+	SDL_RenderClear(gRenderer);
+
+	//Render current frame
+	SDL_Rect* currentClip = &SpriteClips[frame / 8]; //adjust framerate
+	gSpriteSheetTexture.render((screenW - currentClip->w) / 2, (screenH - currentClip->h) / 2, currentClip);
+
+	//Update screen
+	SDL_RenderPresent(gRenderer);
+
+	//Go to next frame
+	++frame;
+
+	//Cycle animation
+	if (frame / 8 >= STATIONARY_ANIMATION_FRAMES)
+	{
+		frame = 0;
+	}
 	//dry run, replace with wrapped class pls.
-	SDL_FillRect(screenSurface,NULL,SDL_MapRGB(screenSurface->format,0,0,0));
+//	SDL_FillRect(screenSurface,NULL,SDL_MapRGB(screenSurface->format,0,0,0));
 	//SDL_RenderClear(renderer);
 	//SDL_RenderPresent(renderer);
-	SDL_UpdateWindowSurface(window);
+//	SDL_UpdateWindowSurface(window);
 	//see if it runs without the updatewindow
 
 	//for now lets run the welcome text from this place
@@ -383,4 +420,56 @@ int textureClass::getWidth() {
 }
 int textureClass::getHeight() {
 	return mHeight;
+}
+bool Game::loadMedia() {
+	if (!gSpriteSheetTexture.loadFromFile("nicepng.png"))
+	{
+		printf("Failed to load walking animation texture!\n");
+		//success = false;
+	}
+	else
+	{
+		//Set sprite clips
+		SpriteClips[0].x = 0;
+		SpriteClips[0].y = 252;
+		SpriteClips[0].w = 127;
+		SpriteClips[0].h = 118;
+
+		SpriteClips[1].x = 126;
+		SpriteClips[1].y = 252;
+		SpriteClips[1].w = 127;
+		SpriteClips[1].h = 118;
+
+		SpriteClips[2].x = 128 * 2;
+		SpriteClips[2].y = 252;
+		SpriteClips[2].w = 127;
+		SpriteClips[2].h = 118;
+
+		SpriteClips[3].x = 128 * 3;
+		SpriteClips[3].y = 252;
+		SpriteClips[3].w = 127;
+		SpriteClips[3].h = 118;
+
+		SpriteClips[4].x = 128 * 4;
+		SpriteClips[4].y = 252;
+		SpriteClips[4].w = 127;
+		SpriteClips[4].h = 118;
+
+		SpriteClips[5].x = 128 * 5;
+		SpriteClips[5].y = 252;
+		SpriteClips[5].w = 127;
+		SpriteClips[5].h = 118;
+
+		SpriteClips[6].x = 128 * 6;
+		SpriteClips[6].y = 252;
+		SpriteClips[6].w = 127;
+		SpriteClips[6].h = 118;
+
+		SpriteClips[7].x = 128 * 7 + 6;
+		SpriteClips[7].y = 252;
+		SpriteClips[7].w = 118;
+		SpriteClips[7].h = 118;
+
+	}
+		return true;
 }
