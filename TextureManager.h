@@ -1,5 +1,5 @@
 #pragma once
-
+#include "Game.h"
 //SUGGESTION: DONOT DECLARE FUNCTIONS IF YOU DONT YET HAVE A USE FOR IT 
 
 
@@ -13,10 +13,10 @@ public:
    // ~textureClass();
 
     //Loads image at specified path
-    bool loadFromFile(std::string path);
+    bool loadFromFile(SDL_Renderer* gRenderer, std::string path);
 
     //Creates image from font string
-    bool loadFromRenderedText(std::string textureText, SDL_Color textColor);
+    bool loadFromRenderedText(SDL_Renderer* gRenderer, std::string textureText, SDL_Color textColor,TTF_Font *gfont);
 
     //Deallocates texture
    // void free();
@@ -31,8 +31,8 @@ public:
     //void setAlpha(Uint8 alpha);
 
     //Renders texture at given point
-    void render(int x, int y, SDL_Rect* clip = NULL, double angle = 0.0, SDL_Point* center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE);
-    void renderResized(SDL_Rect*, double angle = 0.0, SDL_Point* center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE);
+    void render(SDL_Renderer* gRenderer, int x, int y, SDL_Rect* clip = NULL, double angle = 0.0, SDL_Point* center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE);
+    void renderResized(SDL_Renderer* gRenderer, SDL_Rect*, double angle = 0.0, SDL_Point* center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE);
     //Gets image dimensions
     int getWidth();
     int getHeight();

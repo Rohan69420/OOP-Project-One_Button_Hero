@@ -16,19 +16,29 @@ using namespace std;
 //SDL_Renderer* gRenderer;
 
 //global non class enum for whichmap
+
+
 enum MapID {
 	WELCOMESCREEN,
 	TOTALMAPS
 };
 
+enum TextureId {
+	GTEXTEXTURE, 
+	GSPRITESHEETTEXTURE, 
+	GTIMER,
+	WELCOMEOBH, 
+	PRESSSTART,
+	BIGLOGO,
+	TOTALTEXTURES
+};
+
+
 enum class GameState {
 	PLAY,
 	EXIT
 };
-enum class TextureId {
-	BACKGROUND_TEXTURE,
-	TOTAL_TEXTURES
-};
+
 enum class RectangleId {
 	BACKGROUND_RECT,
 	TOTAL_RECTANGLES
@@ -43,7 +53,6 @@ public:
 	void gameLoop();
 	void handleEvents();
 	bool loadMedia();
-    void loadGlobalText();
 	void LoadAppIcon();
 	void LoadingScreen();
 	void ClearGlobalRenderer();

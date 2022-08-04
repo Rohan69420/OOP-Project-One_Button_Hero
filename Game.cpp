@@ -13,15 +13,17 @@ using namespace std;
 //global chrono delay
 std::chrono::milliseconds timespan(500); 
 
-//std::this_thread::sleep_for(timespan);
-
-//temporary global declaration
 
 //temporary global function
 TTF_Font* gfont;
 //TTF_Font* globalFont; //Global font declaration, works here?
 SDL_Renderer* gRenderer;
 textureClass gTextTexture,gSpriteSheetTexture,gTimer; //maybe this can go inside the Game class?
+textureClass WelcomeOBH, PressStart;
+textureClass BigLogo;
+
+gameSounds MegaSoundObj;
+
 Mix_Music* gMusic;
 std::stringstream timeInText; ///for the timer text
 SDL_Color BlackColor = { 0,0,0 };
@@ -64,33 +66,14 @@ void Game::init(const char *title, int x, int y, int w, int h, Uint32 flags) {
 		{
 			cout << "Unable to initialize SDL TTF. Error code:" <<TTF_GetError()<<endl;
 		}
-		//TTF_Font* globalFont;
-		// 
-		//loading global ttf files
-		//textureClass gTextTexture;
-
-
-		//SOUND AREA
-
-		gameSounds MegaSoundObj;
-		if (!MegaSoundObj.initSounds()) {
-			cout << "Unable to initialize the mixer!!!!" << endl;
-		}
-		if (!MegaSoundObj.loadAllSounds()) {
-			cout << "Unable to load all sounds from file!!!" << endl;
-		}
-
-
+		
 		window=SDL_CreateWindow(title, x, y, w, h,flags);
 		if (window == NULL) {
 			cout << "Unable to create window! Error code:" << SDL_GetError() << endl;
 		}
 		else
 		{
-			//load window icon
-			
-			
-
+			//load window
 			screenSurface = SDL_GetWindowSurface(window);
 			//renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC );
 			gRenderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
@@ -108,12 +91,8 @@ void Game::init(const char *title, int x, int y, int w, int h, Uint32 flags) {
 			LoadingScreen();
 			ClearGlobalRenderer();
 		}
-		//SDL_Delay(2000);
-		//SDL_RenderSetScale(gRenderer, (float)screenSurface->w/4, (float)screenSurface->h/4);
-
+		
 		//>>>>>>>>>cclear the renderer before this, or move the welcome text to another corner<<<<<<<<<<<<
-
-		loadGlobalText(); //call here
 		loadWelcomeText();
 		MegaSoundObj.playGlobalMusic(); //should be bool but ok
 		gameLoop();
@@ -209,14 +188,15 @@ void Game::draw() {
 
 	//Render current frame
 	SDL_Rect* currentClip = &SpriteClips[frame / 8]; //adjust framerate
-	gSpriteSheetTexture.render((screenW - currentClip->w) / 2, (screenH - currentClip->h) / 2, currentClip);
+	gSpriteSheetTexture.render(gRenderer,(screenW - currentClip->w) / 2, (screenH - currentClip->h) / 2, currentClip);
 
 	
 
 	timeInText.str(""); //Lets try without his X, TURNS OUT THIS IS FOR CLEARING THE PAST TEXT?
 	timeInText << "Time passed: " << (SDL_GetTicks() - startTime) /1000<<setw(5)<<" s";
-	gTimer.loadFromRenderedText(timeInText.str().c_str(), BlackColor);
-	gTimer.render(screenW - TIMERWIDTH, 0);
+	
+	gTimer.loadFromRenderedText(gRenderer, timeInText.str().c_str(), BlackColor, gfont);
+	gTimer.render(gRenderer,screenW - TIMERWIDTH, 0);
 
 	//Update screen
 	SDL_RenderPresent(gRenderer);
@@ -240,68 +220,14 @@ void Game::draw() {
 	 //will change the object name later on, might switch into an array with enum integrated
 }
 
-//texture class imp-temp definition for loading texture
-bool textureClass::loadFromRenderedText(std::string textureText, SDL_Color textColor)
-{
-	//Get rid of preexisting texture
-	//free();
 
-	//Render text surface
-	SDL_Surface* textSurface = TTF_RenderText_Solid(gfont, textureText.c_str(), textColor);
-	if (textSurface == NULL)
-	{
-		cout<<"Unable to render text surface! SDL_ttf Error: "<< TTF_GetError()<<endl;
-	}
-	else
-	{
-		//Create texture from surface pixels
-		//SDL_Renderer* lrenderer;
-		mTexture = SDL_CreateTextureFromSurface(gRenderer, textSurface);
-		if (mTexture == NULL)
-		{
-			cout<<"Unable to create texture from rendered text! SDL Error: "<< SDL_GetError()<<endl;
-		}
-		else
-		{
-			//Get image dimensions
-			mWidth = textSurface->w/2;
-			mHeight = textSurface->h/2;
-		}
-
-		//Get rid of old surface
-		SDL_FreeSurface(textSurface);
-
-		//Substitute rendering text here to using a seperate render function so that it is more reusable
-	}
-
-	//Return success
-	return mTexture != NULL;
-}
-
-void Game::loadGlobalText() {
-	gfont = TTF_OpenFont("ka1.ttf", 72); //ptsize is size of font 
-	
-	if (gfont == NULL) {
-		cout << "Failed to load the ttf file. Error code" << TTF_GetError() << endl;
-	}
-	
-
-}
 void Game::loadWelcomeText() {
-	SDL_Color textColor = { 255, 255, 255 };
-	textureClass WelcomeOBH,PressStart;
-	if (!WelcomeOBH.loadFromRenderedText("Welcome to One Button Hero", textColor)) {
-		cout << "Failed to render texture." << endl;
-	}
-	gfont = TTF_OpenFont("ka1.ttf", 48);
-	if (!PressStart.loadFromRenderedText("Press any button to start.", textColor)) {
-		cout << "Failed to render texture." << endl;
-	}
+	
 
 	//sorted that we dont need to resize and can use point size instead
-	WelcomeOBH.render((screenW-WelcomeOBH.getWidth())/2, (screenH-WelcomeOBH.getHeight()) / 2);  //default argument enabled
+	WelcomeOBH.render(gRenderer,(screenW-WelcomeOBH.getWidth())/2, (screenH-WelcomeOBH.getHeight()) / 2);  //default argument enabled
 	//positioned such as the welcome text is rendered below the press to start
-	PressStart.render((screenW-PressStart.getWidth()) / 2, (screenH-PressStart.getHeight()) / 2 + WelcomeOBH.getHeight() + 5);
+	PressStart.render(gRenderer,(screenW-PressStart.getWidth()) / 2, (screenH-PressStart.getHeight()) / 2 + WelcomeOBH.getHeight() + 5);
 	//giving some clearance
 	//SDL_RenderCopy(gRenderer, mTexture, NULL, &WelcomeText); //<here it is being rendered
 	SDL_RenderPresent(gRenderer);
@@ -316,15 +242,10 @@ void Game::LoadAppIcon() {
 }
 void Game::LoadingScreen() {
 	if (!launchedLoadingScreen) {
-
-		
-
-		textureClass BigLogo;
-		BigLogo.loadFromFile("images/LOGO.png");
 		//temporary clipping solution
 		SDL_Rect clipper;
 		clipper = { screenSurface->w / 3,screenSurface->h / 6,screenSurface->w / 3,screenSurface->w / 3 };
-		BigLogo.renderResized(&clipper); //default args
+		BigLogo.renderResized(gRenderer,&clipper); //default args
 
 		ProgressBarOuter = { screenSurface->w / 6,screenSurface->h / 6 + clipper.h + 20 ,static_cast<int>(screenSurface->w / 1.5),10 };
 		//y position set such that it is always below the big logo, inner rect y-pos is same as outer y-pos
@@ -348,7 +269,9 @@ void Game::LoadingScreen() {
 		SDL_RenderPresent(gRenderer);
 	}
 }
-bool textureClass::loadFromFile(string path) {
+
+/*
+bool textureClass::loadFromFile(gRenderer,string path) {
 
 	//free();
 	//NOT defined yet
@@ -388,7 +311,7 @@ bool textureClass::loadFromFile(string path) {
 	mTexture = newTexture;
 	return mTexture != NULL;
 }
-void textureClass::render(int x, int y, SDL_Rect* clip, double angle, SDL_Point* center, SDL_RendererFlip flip)
+void textureClass::render(gRenderer,int x, int y, SDL_Rect* clip, double angle, SDL_Point* center, SDL_RendererFlip flip)
 {
 	//Set rendering space and render to screen
 	SDL_Rect renderQuad = { x, y, mWidth, mHeight };
@@ -406,40 +329,9 @@ void textureClass::render(int x, int y, SDL_Rect* clip, double angle, SDL_Point*
 	//USE SDL_FLIP_NONE for no flip
 	//USE NULL for center to set rotating point at center of the texture.
 }
-void textureClass::renderResized(SDL_Rect* Desti, double angle, SDL_Point* center, SDL_RendererFlip flip) {
+void textureClass::renderResized(gRenderer,SDL_Rect* Desti, double angle, SDL_Point* center, SDL_RendererFlip flip) {
 	SDL_RenderCopyEx(gRenderer, mTexture, NULL, Desti, angle, center, flip);
 	SDL_RenderPresent(gRenderer);
-}
-void Game::ClearGlobalRenderer() {
-	SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, 255);
-	SDL_RenderClear(gRenderer);
-	
-	cout << "gRenderer cleared!" << endl;
-}
-bool gameSounds::initSounds() { 
-	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) { //chunksize option here
-		cout << "SDL mixer couldn't be initialized. Error code: " <<Mix_GetError() << endl;
-	}
-	return true;
-}
-bool gameSounds::loadAllSounds() {
-	gMusic = Mix_LoadMUS("sounds/softbeat/soft-beat.mp3");
-	if (gMusic == NULL) {
-		cout << "Could not load global music. Error code: " << Mix_GetError() << endl;
-	}
-
-	//chunk loading procedure left to be completed
-	//chunk_name = Mix_LoadWav("path");
-	return true;
-}
-void gameSounds::closeSounds() {
-	Mix_FreeMusic(gMusic); //freeing the global music
-	gMusic = NULL; //This necessary I guess
-	Mix_Quit(); //Ending this part from here instead of doing it in one messed up conglomeration
-
-}
-void gameSounds::playGlobalMusic() {
-	Mix_PlayMusic(gMusic, -1);
 }
 int textureClass::getWidth() {
 	return mWidth;
@@ -447,8 +339,82 @@ int textureClass::getWidth() {
 int textureClass::getHeight() {
 	return mHeight;
 }
+bool textureClass::loadFromRenderedText(gRenderer,std::string textureText, SDL_Color textColor)
+{
+	//Get rid of preexisting texture
+	//free();
+
+	//Render text surface
+	SDL_Surface* textSurface = TTF_RenderText_Solid(gfont, textureText.c_str(), textColor);
+	if (textSurface == NULL)
+	{
+		cout<<"Unable to render text surface! SDL_ttf Error: "<< TTF_GetError()<<endl;
+	}
+	else
+	{
+		//Create texture from surface pixels
+		//SDL_Renderer* lrenderer;
+		mTexture = SDL_CreateTextureFromSurface(gRenderer, textSurface);
+		if (mTexture == NULL)
+		{
+			cout<<"Unable to create texture from rendered text! SDL Error: "<< SDL_GetError()<<endl;
+		}
+		else
+		{
+			//Get image dimensions
+			mWidth = textSurface->w/2;
+			mHeight = textSurface->h/2;
+		}
+
+		//Get rid of old surface
+		SDL_FreeSurface(textSurface);
+
+		//Substitute rendering text here to using a seperate render function so that it is more reusable
+	}
+
+	//Return success
+	return mTexture != NULL;
+} */
+
 bool Game::loadMedia() {
-	if (!gSpriteSheetTexture.loadFromFile("nicepng60pxw.png"))
+
+	//fonts 
+	gfont = TTF_OpenFont("ka1.ttf", 72); //ptsize is size of font 
+
+	if (gfont == NULL) {
+		cout << "Failed to load the ttf file. Error code" << TTF_GetError() << endl;
+	}
+
+	SDL_Color textColor = { 255, 255, 255 };
+
+	if (!WelcomeOBH.loadFromRenderedText(gRenderer, "Welcome to One Button Hero", textColor, gfont)) {
+		cout << "Failed to render texture." << endl;
+	}
+	gfont = TTF_OpenFont("ka1.ttf", 48);
+	if (!PressStart.loadFromRenderedText(gRenderer, "Press any button to start.", textColor, gfont)) {
+		cout << "Failed to render texture." << endl;
+	}
+
+	//timer
+	
+
+
+
+	//images
+
+	BigLogo.loadFromFile(gRenderer, "images/LOGO.png");
+
+	//SOUND AREA
+
+
+	if (!MegaSoundObj.initSounds()) {
+		cout << "Unable to initialize the mixer!!!!" << endl;
+	}
+	if (!MegaSoundObj.loadAllSounds()) {
+		cout << "Unable to load all sounds from file!!!" << endl;
+	}
+
+	if (!gSpriteSheetTexture.loadFromFile(gRenderer,"nicepng60pxw.png"))
 	{
 		printf("Failed to load walking animation texture!\n");
 		//success = false;
@@ -497,5 +463,39 @@ bool Game::loadMedia() {
 		SpriteClips[7].h = SPRITEH;
 
 	}
+
+	
 		return true;
+}
+void Game::ClearGlobalRenderer() {
+	SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, 255);
+	SDL_RenderClear(gRenderer);
+	
+	cout << "gRenderer cleared!" << endl;
+}
+
+bool gameSounds::initSounds() { 
+	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) { //chunksize option here
+		cout << "SDL mixer couldn't be initialized. Error code: " <<Mix_GetError() << endl;
+	}
+	return true;
+}
+bool gameSounds::loadAllSounds() {
+	gMusic = Mix_LoadMUS("sounds/softbeat/soft-beat.mp3");
+	if (gMusic == NULL) {
+		cout << "Could not load global music. Error code: " << Mix_GetError() << endl;
+	}
+
+	//chunk loading procedure left to be completed
+	//chunk_name = Mix_LoadWav("path");
+	return true;
+}
+void gameSounds::closeSounds() {
+	Mix_FreeMusic(gMusic); //freeing the global music
+	gMusic = NULL; //This necessary I guess
+	Mix_Quit(); //Ending this part from here instead of doing it in one messed up conglomeration
+
+}
+void gameSounds::playGlobalMusic() {
+	Mix_PlayMusic(gMusic, -1);
 }
