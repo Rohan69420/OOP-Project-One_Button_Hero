@@ -1,6 +1,6 @@
 #include "TextureManager.h"
-
-bool textureClass::loadFromFile(SDL_Renderer *gRenderer,string path) {
+#include "enumerators.h"
+bool textureClass::loadFromFile(SDL_Renderer *gRenderer, TextureId T_ID, string path) {
 
 	//free();
 	//NOT defined yet
@@ -28,8 +28,8 @@ bool textureClass::loadFromFile(SDL_Renderer *gRenderer,string path) {
 		else
 		{
 			//Get image dimensions
-			mWidth = loadedSurface->w;
-			mHeight = loadedSurface->h;
+			mWidth[T_ID] = loadedSurface->w;
+			mHeight[T_ID] = loadedSurface->h;
 		}
 
 		//Get rid of old loaded surface
@@ -37,13 +37,13 @@ bool textureClass::loadFromFile(SDL_Renderer *gRenderer,string path) {
 	}
 
 	//Return success
-	mTexture = newTexture;
-	return mTexture != NULL;
+	mTexture[T_ID] = newTexture;
+	return mTexture[T_ID] != NULL;
 }
-void textureClass::render(SDL_Renderer* gRenderer, int x, int y, SDL_Rect* clip, double angle, SDL_Point* center, SDL_RendererFlip flip)
+void textureClass::render(SDL_Renderer* gRenderer,TextureId T_ID, int x, int y, SDL_Rect* clip, double angle, SDL_Point* center, SDL_RendererFlip flip)
 {
 	//Set rendering space and render to screen
-	SDL_Rect renderQuad = { x, y, mWidth, mHeight };
+	SDL_Rect renderQuad = { x, y, mWidth[T_ID], mHeight[T_ID] };
 
 	//Set clip rendering dimensions
 	if (clip != NULL)
@@ -53,22 +53,22 @@ void textureClass::render(SDL_Renderer* gRenderer, int x, int y, SDL_Rect* clip,
 	}
 
 	//Render to screen
-	SDL_RenderCopyEx(gRenderer, mTexture, clip, &renderQuad, angle, center, flip);
+	SDL_RenderCopyEx(gRenderer, mTexture[T_ID], clip, &renderQuad, angle, center, flip);
 	//REPLACED SRCRECT FROM CLIP TO NULL
 	//USE SDL_FLIP_NONE for no flip
 	//USE NULL for center to set rotating point at center of the texture.
 }
-void textureClass::renderResized(SDL_Renderer* gRenderer, SDL_Rect* Desti, double angle, SDL_Point* center, SDL_RendererFlip flip) {
-	SDL_RenderCopyEx(gRenderer, mTexture, NULL, Desti, angle, center, flip);
+void textureClass::renderResized(SDL_Renderer* gRenderer,TextureId T_ID, SDL_Rect* Desti, double angle, SDL_Point* center, SDL_RendererFlip flip) {
+	SDL_RenderCopyEx(gRenderer, mTexture[T_ID], NULL, Desti, angle, center, flip);
 	SDL_RenderPresent(gRenderer);
 }
-int textureClass::getWidth() {
-	return mWidth;
+int textureClass::getWidth(TextureId T_ID) {
+	return mWidth[T_ID];
 }
-int textureClass::getHeight() {
-	return mHeight;
+int textureClass::getHeight(TextureId T_ID) {
+	return mHeight[T_ID];
 }
-bool textureClass::loadFromRenderedText(SDL_Renderer* gRenderer, std::string textureText, SDL_Color textColor,TTF_Font *gfont)
+bool textureClass::loadFromRenderedText(SDL_Renderer* gRenderer,TextureId T_ID, std::string textureText, SDL_Color textColor,TTF_Font *gfont)
 {
 	//Get rid of preexisting texture
 	//free();
@@ -83,16 +83,16 @@ bool textureClass::loadFromRenderedText(SDL_Renderer* gRenderer, std::string tex
 	{
 		//Create texture from surface pixels
 		//SDL_Renderer* lrenderer;
-		mTexture = SDL_CreateTextureFromSurface(gRenderer, textSurface);
-		if (mTexture == NULL)
+		mTexture[T_ID] = SDL_CreateTextureFromSurface(gRenderer, textSurface);
+		if (mTexture[T_ID] == NULL)
 		{
 			cout << "Unable to create texture from rendered text! SDL Error: " << SDL_GetError() << endl;
 		}
 		else
 		{
 			//Get image dimensions
-			mWidth = textSurface->w / 2;
-			mHeight = textSurface->h / 2;
+			mWidth[T_ID] = textSurface->w / 2;
+			mHeight[T_ID] = textSurface->h / 2;
 		}
 
 		//Get rid of old surface
@@ -102,5 +102,5 @@ bool textureClass::loadFromRenderedText(SDL_Renderer* gRenderer, std::string tex
 	}
 
 	//Return success
-	return mTexture != NULL;
+	return mTexture[T_ID] != NULL;
 }

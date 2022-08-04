@@ -23,15 +23,7 @@ enum MapID {
 	TOTALMAPS
 };
 
-enum TextureId {
-	GTEXTEXTURE, 
-	GSPRITESHEETTEXTURE, 
-	GTIMER,
-	WELCOMEOBH, 
-	PRESSSTART,
-	BIGLOGO,
-	TOTALTEXTURES
-};
+
 
 
 enum class GameState {

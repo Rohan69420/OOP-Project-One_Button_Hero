@@ -2,6 +2,7 @@
 #include <chrono>
 #include <thread>
 #include <iomanip>
+#include "enumerators.h"
 
 #define SPRITEW 60
 #define SPRITEH 59
@@ -18,15 +19,15 @@ std::chrono::milliseconds timespan(500);
 TTF_Font* gfont;
 //TTF_Font* globalFont; //Global font declaration, works here?
 SDL_Renderer* gRenderer;
-textureClass gTextTexture,gSpriteSheetTexture,gTimer; //maybe this can go inside the Game class?
-textureClass WelcomeOBH, PressStart;
-textureClass BigLogo;
+
+textureClass AllTexture;
 
 gameSounds MegaSoundObj;
 
 Mix_Music* gMusic;
 std::stringstream timeInText; ///for the timer text
 SDL_Color BlackColor = { 0,0,0 };
+
 
 
 Game::Game() { //constructor
@@ -188,15 +189,15 @@ void Game::draw() {
 
 	//Render current frame
 	SDL_Rect* currentClip = &SpriteClips[frame / 8]; //adjust framerate
-	gSpriteSheetTexture.render(gRenderer,(screenW - currentClip->w) / 2, (screenH - currentClip->h) / 2, currentClip);
+	AllTexture.render(gRenderer,GSPRITESHEETTEXTURE,(screenW - currentClip->w) / 2, (screenH - currentClip->h) / 2, currentClip);
 
 	
 
 	timeInText.str(""); //Lets try without his X, TURNS OUT THIS IS FOR CLEARING THE PAST TEXT?
 	timeInText << "Time passed: " << (SDL_GetTicks() - startTime) /1000<<setw(5)<<" s";
 	
-	gTimer.loadFromRenderedText(gRenderer, timeInText.str().c_str(), BlackColor, gfont);
-	gTimer.render(gRenderer,screenW - TIMERWIDTH, 0);
+	AllTexture.loadFromRenderedText(gRenderer,GTIMER, timeInText.str().c_str(), BlackColor, gfont);
+	AllTexture.render(gRenderer,GTIMER,screenW - TIMERWIDTH, 0);
 
 	//Update screen
 	SDL_RenderPresent(gRenderer);
@@ -225,9 +226,9 @@ void Game::loadWelcomeText() {
 	
 
 	//sorted that we dont need to resize and can use point size instead
-	WelcomeOBH.render(gRenderer,(screenW-WelcomeOBH.getWidth())/2, (screenH-WelcomeOBH.getHeight()) / 2);  //default argument enabled
+	AllTexture.render(gRenderer,WELCOMEOBH,(screenW-AllTexture.getWidth(WELCOMEOBH))/2, (screenH-AllTexture.getHeight(WELCOMEOBH)) / 2);  //default argument enabled
 	//positioned such as the welcome text is rendered below the press to start
-	PressStart.render(gRenderer,(screenW-PressStart.getWidth()) / 2, (screenH-PressStart.getHeight()) / 2 + WelcomeOBH.getHeight() + 5);
+	AllTexture.render(gRenderer,PRESSSTART,(screenW-AllTexture.getWidth(PRESSSTART)) / 2, (screenH-AllTexture.getHeight(PRESSSTART)) / 2 + AllTexture.getHeight(PRESSSTART) + 5);
 	//giving some clearance
 	//SDL_RenderCopy(gRenderer, mTexture, NULL, &WelcomeText); //<here it is being rendered
 	SDL_RenderPresent(gRenderer);
@@ -245,7 +246,7 @@ void Game::LoadingScreen() {
 		//temporary clipping solution
 		SDL_Rect clipper;
 		clipper = { screenSurface->w / 3,screenSurface->h / 6,screenSurface->w / 3,screenSurface->w / 3 };
-		BigLogo.renderResized(gRenderer,&clipper); //default args
+		AllTexture.renderResized(gRenderer,BIGLOGO,&clipper); //default args
 
 		ProgressBarOuter = { screenSurface->w / 6,screenSurface->h / 6 + clipper.h + 20 ,static_cast<int>(screenSurface->w / 1.5),10 };
 		//y position set such that it is always below the big logo, inner rect y-pos is same as outer y-pos
@@ -387,11 +388,11 @@ bool Game::loadMedia() {
 
 	SDL_Color textColor = { 255, 255, 255 };
 
-	if (!WelcomeOBH.loadFromRenderedText(gRenderer, "Welcome to One Button Hero", textColor, gfont)) {
+	if (!AllTexture.loadFromRenderedText(gRenderer,WELCOMEOBH, "Welcome to One Button Hero", textColor, gfont)) {
 		cout << "Failed to render texture." << endl;
 	}
 	gfont = TTF_OpenFont("ka1.ttf", 48);
-	if (!PressStart.loadFromRenderedText(gRenderer, "Press any button to start.", textColor, gfont)) {
+	if (!AllTexture.loadFromRenderedText(gRenderer,PRESSSTART, "Press any button to start.", textColor, gfont)) {
 		cout << "Failed to render texture." << endl;
 	}
 
@@ -402,7 +403,7 @@ bool Game::loadMedia() {
 
 	//images
 
-	BigLogo.loadFromFile(gRenderer, "images/LOGO.png");
+	AllTexture.loadFromFile(gRenderer,BIGLOGO, "images/LOGO.png");
 
 	//SOUND AREA
 
@@ -414,7 +415,7 @@ bool Game::loadMedia() {
 		cout << "Unable to load all sounds from file!!!" << endl;
 	}
 
-	if (!gSpriteSheetTexture.loadFromFile(gRenderer,"nicepng60pxw.png"))
+	if (!AllTexture.loadFromFile(gRenderer,GSPRITESHEETTEXTURE,"nicepng60pxw.png"))
 	{
 		printf("Failed to load walking animation texture!\n");
 		//success = false;

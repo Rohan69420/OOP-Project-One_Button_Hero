@@ -1,6 +1,8 @@
 #pragma once
 #include "Game.h"
+#include "enumerators.h"
 //SUGGESTION: DONOT DECLARE FUNCTIONS IF YOU DONT YET HAVE A USE FOR IT 
+
 
 
 class textureClass //texture wrapper
@@ -13,16 +15,16 @@ public:
    // ~textureClass();
 
     //Loads image at specified path
-    bool loadFromFile(SDL_Renderer* gRenderer, std::string path);
+    bool loadFromFile(SDL_Renderer* gRenderer, TextureId T_ID, std::string path);
 
     //Creates image from font string
-    bool loadFromRenderedText(SDL_Renderer* gRenderer, std::string textureText, SDL_Color textColor,TTF_Font *gfont);
+    bool loadFromRenderedText(SDL_Renderer* gRenderer, TextureId T_ID, std::string textureText, SDL_Color textColor,TTF_Font *gfont);
 
     //Deallocates texture
    // void free();
 
     //Set color modulation
-    void setColor(Uint8 red, Uint8 green, Uint8 blue);
+ //   void setColor(Uint8 red, Uint8 green, Uint8 blue);
 
     //Set blending
     //void setBlendMode(SDL_BlendMode blending);
@@ -31,19 +33,20 @@ public:
     //void setAlpha(Uint8 alpha);
 
     //Renders texture at given point
-    void render(SDL_Renderer* gRenderer, int x, int y, SDL_Rect* clip = NULL, double angle = 0.0, SDL_Point* center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE);
-    void renderResized(SDL_Renderer* gRenderer, SDL_Rect*, double angle = 0.0, SDL_Point* center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE);
+    void render(SDL_Renderer* gRenderer,TextureId T_ID, int x, int y, SDL_Rect* clip = NULL, double angle = 0.0, SDL_Point* center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE);
+    void renderResized(SDL_Renderer* gRenderer, TextureId T_ID, SDL_Rect*, double angle = 0.0, SDL_Point* center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE);
     //Gets image dimensions
-    int getWidth();
-    int getHeight();
+    int getWidth(TextureId T_ID);
+    int getHeight(TextureId T_ID);
 
 private:
     //The actual hardware texture
-    SDL_Texture* mTexture;
+    SDL_Texture* mTexture[TOTALTEXTURES];
     SDL_Renderer* renderer;
     SDL_Rect Rect;
 
     //Image dimensions
-    int mWidth;
-    int mHeight;
+    int mWidth[TOTALTEXTURES];
+    int mHeight[TOTALTEXTURES];
+
 };
