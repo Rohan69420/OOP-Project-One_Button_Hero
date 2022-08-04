@@ -139,9 +139,11 @@
   <ItemGroup>
     <ClInclude Include="ButtonHandler.h" />
     <ClInclude Include="CharacterMovement.h" />
+    <ClInclude Include="enumerators.h" />
     <ClInclude Include="Game.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="includes.h" />
     <ClInclude Include="SoundManager.h" />
     <ClInclude Include="TextureManager.h" />
   </ItemGroup>
