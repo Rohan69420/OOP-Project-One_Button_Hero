@@ -5,7 +5,10 @@
 #include <iostream>
 #include "TextureManager.h"
 #include "SoundManager.h"
+#include "PlayerHandler.h"
+#include "GlobalDetails.h"
 #include <sstream>
+#include "enumerators.h"
 
 #define STATIONARY_ANIMATION_FRAMES 8
 
@@ -16,14 +19,6 @@ using namespace std;
 //SDL_Renderer* gRenderer;
 
 //global non class enum for whichmap
-
-
-enum MapID {
-	WELCOMESCREEN,
-	TOTALMAPS
-};
-
-
 
 
 enum class GameState {
@@ -50,12 +45,11 @@ public:
 	void ClearGlobalRenderer();
 	void loadWelcomeText();
 private:
-	int screenW, screenH;
 	SDL_Window* window;
 	SDL_Renderer* renderer;
 	SDL_Surface* screenSurface;
 	GameState gamestate;
-	MapID WhichMap;
+	TextureId WhichMap;
 	int frame;
 	bool MapRunning,tickStarted;
 
@@ -68,10 +62,11 @@ private:
 	SDL_Rect SpriteClips[STATIONARY_ANIMATION_FRAMES];
 };
 
-class surfaceClass{};
-class rectangleClass {
-private:
-	SDL_Rect Rect;
-public:
-	
-};
+// Might not need this \|/
+//class surfaceClass{};
+//class rectangleClass {
+//private:
+//	SDL_Rect Rect;
+//public:
+//	
+//};
