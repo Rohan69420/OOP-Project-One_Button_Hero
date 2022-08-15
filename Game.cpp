@@ -1,4 +1,4 @@
-#include <Game.h> 
+#include "Game.h" 
 #include <chrono>
 #include <thread>
 #include <iomanip>
@@ -115,6 +115,7 @@ void Game::gameLoop() {
 }
 void Game::handleEvents() {
 	SDL_Event evnt;
+	P1.positiveGravity();
 	while (SDL_PollEvent(&evnt)) {
 		switch (evnt.type) {
 		case SDL_QUIT:
@@ -395,8 +396,8 @@ void Player::handleEvent(SDL_Event& e) {
 		{
 		case SDLK_UP: mVelY -= DOT_VEL; break;
 		case SDLK_DOWN: mVelY += DOT_VEL; break;
-		case SDLK_LEFT: mVelX -= DOT_VEL; break;
-		case SDLK_RIGHT: mVelX += DOT_VEL; break;
+		case SDLK_LEFT: mVelX -= DOT_VEL; FlipVal=(FlipVal ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL);  break;
+		case SDLK_RIGHT: mVelX += DOT_VEL; FlipVal=(FlipVal ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE); break;
 		}
 	}
 	//Release
@@ -434,5 +435,16 @@ void Player::move() {
 }
 void Player::render(SDL_Rect *currentClip) {
 	//Show the dot
-	AllTexture.render(gRenderer, GSPRITESHEETTEXTURE, mPosX, mPosY, currentClip);
+	AllTexture.render(gRenderer, GSPRITESHEETTEXTURE, mPosX, mPosY, currentClip,0.0f,0,FlipVal);
+}
+void Player::positiveGravity() {
+	if (!Collision()) {
+		mPosY += 5;
+	}
+}
+bool Player::Collision() {
+	if ((mPosX < 0) || (mPosY < 0) || (mPosX + DOT_WIDTH) > screenW || (mPosY + DOT_HEIGHT) > screenH) {
+		return true;
+	}
+	return false;
 }

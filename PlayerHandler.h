@@ -9,6 +9,7 @@ public:
 
 	//Maximum axis velocity of the dot
 	static const int DOT_VEL = 10;
+	static const int Gravity = 4;
 
 	//Initializes the variables
 	Player();
@@ -21,6 +22,10 @@ public:
 
 	//Shows the dot on the screen
 	void render(SDL_Rect *);
+	
+	void positiveGravity();
+
+	bool Collision();
 
 
 private:
@@ -29,4 +34,6 @@ private:
 
 	//The velocity of the dot
 	int mVelX, mVelY;
+
+	SDL_RendererFlip FlipVal;
 };
