@@ -177,7 +177,7 @@ void Game::draw() {
 
 	//Render current frame
 	SDL_Rect* currentClip = &SpriteClips[frame / 8]; //adjust framerate
-	P1.render(currentClip);
+	P1.render(gRenderer,currentClip);
 	/*AllTexture.render(gRenderer,GSPRITESHEETTEXTURE,(SpriteLocationX - currentClip->w) / 2, (SpriteLocationY - currentClip->h) / 2, currentClip);*/
 
 	
@@ -187,6 +187,9 @@ void Game::draw() {
 	
 	AllTexture.loadFromRenderedText(gRenderer,GTIMER, timeInText.str().c_str(), BlackColor, gfont);
 	AllTexture.render(gRenderer,GTIMER,screenW - TIMERWIDTH, 0);
+
+	//render obstacles
+	P1.RenderObstacles(gRenderer);
 
 	//Update screen
 	SDL_RenderPresent(gRenderer);
@@ -383,89 +386,7 @@ void gameSounds::playGlobalMusic() {
 	Mix_PlayMusic(gMusic, -1);
 }
 
-Player::Player() {
-	mPosX = 0;
-	mPosY = 0;
-	mVelX = 0;
-	mVelY = 0;
-	
-	//facing directions
-	FlipVal = SDL_FLIP_NONE;
-	DF = RIGHT; //persisting issue that it gets reset to this variable once scope ends but we dont need to tackle this issue in our original plan
-}
-void Player::handleEvent(SDL_Event& e) {
-	if (e.type == SDL_KEYDOWN && e.key.repeat == 0)		///<<<<<<<<	-	-	- need key repeat because only one press is enuff
-	{									////////<<<< meaning that even if you are holding key it will still by 10fps vel
-		switch (e.key.keysym.sym)
-		{
-		case SDLK_UP: mVelY -= DOT_VEL; break;
-		case SDLK_DOWN: mVelY += DOT_VEL; break;
-		case SDLK_LEFT: mVelX -= DOT_VEL; 
-			if (DF == RIGHT) {
-				DF = LEFT;
-				FlipVal= SDL_FLIP_HORIZONTAL;
-			}
-			else {
-				FlipVal = SDL_FLIP_NONE;
-			}
-			break;
-
-		case SDLK_RIGHT: mVelX += DOT_VEL; 
-			if (DF == LEFT) {
-				DF = RIGHT;
-				FlipVal = SDL_FLIP_HORIZONTAL; 
-			}
-			else {
-				FlipVal=SDL_FLIP_NONE;
-			}
-			break;
-		}
-	}
-	//Release
-	else if (e.type == SDL_KEYUP && e.key.repeat == 0)		//<<<<<<<<< reverse velocity?
-	{
-		switch (e.key.keysym.sym)
-		{
-		case SDLK_UP: mVelY += DOT_VEL; break;
-		case SDLK_DOWN: mVelY -= DOT_VEL; break;
-		case SDLK_LEFT: mVelX += DOT_VEL; break;
-		case SDLK_RIGHT: mVelX -= DOT_VEL; break;
-		}
-	}
-}
-void Player::move() {
-	//Move the dot left or right
-	mPosX += mVelX;						///<<<<<<<<<< move as much as the velocity
-
-	//If the dot went too far to the left or right
-	if ((mPosX < 0) || (mPosX + DOT_WIDTH > screenW))		//<<move back nice
-	{
-		//Move back
-		mPosX -= mVelX;
-	}
-
-	//Move the dot up or down
-	mPosY += mVelY;
-
-	//If the dot went too far up or down
-	if ((mPosY < 0) || (mPosY + DOT_HEIGHT > screenH))
-	{
-		//Move back
-		mPosY -= mVelY;
-	}
-}
-void Player::render(SDL_Rect *currentClip) {
+void Player::render(SDL_Renderer* gRenderer, SDL_Rect* currentClip) {
 	//Show the dot
-	AllTexture.render(gRenderer, GSPRITESHEETTEXTURE, mPosX, mPosY, currentClip,0.0f,0,FlipVal);
-}
-void Player::positiveGravity() {
-	if (!Collision()) {
-		mPosY += 5;
-	}
-}
-bool Player::Collision() {
-	if ((mPosX < 0) || (mPosY < 0) || (mPosX + DOT_WIDTH) > screenW || (mPosY + DOT_HEIGHT) > screenH) {
-		return true;
-	}
-	return false;
+	AllTexture.render(gRenderer, GSPRITESHEETTEXTURE, mPosX, mPosY, currentClip, 0.0f, 0, FlipVal);
 }

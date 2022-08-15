@@ -1,7 +1,10 @@
 #pragma once
 #include "Game.h"
 #include "GlobalDetails.h"
-class Player{
+#include "Objects.h"
+#include "TextureManager.h"
+
+class Player : public SolidObjects{ //inheritance
 public:
 	//The dimensions of the dot
 	static const int DOT_WIDTH = SPRITEW;
@@ -21,11 +24,15 @@ public:
 	void move();	///<<<<<<<<<	-	-	-	-	-	-	-		-
 
 	//Shows the dot on the screen
-	void render(SDL_Rect *);
+	void render(SDL_Renderer *gRenderer,SDL_Rect *);
 	
 	void positiveGravity();
 
 	bool Collision();
+
+	void LoadAllObstacles();
+
+	void RenderObstacles(SDL_Renderer*);
 
 
 private:

@@ -9,6 +9,7 @@
 #include "GlobalDetails.h"
 #include <sstream>
 #include "enumerators.h"
+#include "Objects.h"
 
 #define STATIONARY_ANIMATION_FRAMES 8
 
