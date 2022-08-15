@@ -388,6 +388,10 @@ Player::Player() {
 	mPosY = 0;
 	mVelX = 0;
 	mVelY = 0;
+	
+	//facing directions
+	FlipVal = SDL_FLIP_NONE;
+	DF = RIGHT; //persisting issue that it gets reset to this variable once scope ends but we dont need to tackle this issue in our original plan
 }
 void Player::handleEvent(SDL_Event& e) {
 	if (e.type == SDL_KEYDOWN && e.key.repeat == 0)		///<<<<<<<<	-	-	- need key repeat because only one press is enuff
@@ -396,8 +400,25 @@ void Player::handleEvent(SDL_Event& e) {
 		{
 		case SDLK_UP: mVelY -= DOT_VEL; break;
 		case SDLK_DOWN: mVelY += DOT_VEL; break;
-		case SDLK_LEFT: mVelX -= DOT_VEL; FlipVal=(FlipVal ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL);  break;
-		case SDLK_RIGHT: mVelX += DOT_VEL; FlipVal=(FlipVal ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE); break;
+		case SDLK_LEFT: mVelX -= DOT_VEL; 
+			if (DF == RIGHT) {
+				DF = LEFT;
+				FlipVal= SDL_FLIP_HORIZONTAL;
+			}
+			else {
+				FlipVal = SDL_FLIP_NONE;
+			}
+			break;
+
+		case SDLK_RIGHT: mVelX += DOT_VEL; 
+			if (DF == LEFT) {
+				DF = RIGHT;
+				FlipVal = SDL_FLIP_HORIZONTAL; 
+			}
+			else {
+				FlipVal=SDL_FLIP_NONE;
+			}
+			break;
 		}
 	}
 	//Release

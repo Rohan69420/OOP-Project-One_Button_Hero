@@ -36,4 +36,10 @@ private:
 	int mVelX, mVelY;
 
 	SDL_RendererFlip FlipVal;
+
+	enum DirectionFacing {
+		LEFT,
+		RIGHT
+	};
+	DirectionFacing DF;
 };
