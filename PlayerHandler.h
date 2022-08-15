@@ -12,7 +12,7 @@ public:
 
 	//Maximum axis velocity of the dot
 	static const int DOT_VEL = 10;
-	static const int Gravity = 4;
+	static const int Gravity = 2;
 
 	//Initializes the variables
 	Player();
@@ -49,4 +49,6 @@ private:
 		RIGHT
 	};
 	DirectionFacing DF;
+
+	int jumpCounter;
 };
