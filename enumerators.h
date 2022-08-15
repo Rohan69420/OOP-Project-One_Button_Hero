@@ -1,6 +1,7 @@
 #pragma once
 enum TextureId {
 	GSPRITESHEETTEXTURE,
+	FIRSTMAP,
 	GTIMER,
 	WELCOMEOBH,
 	PRESSSTART,
