@@ -34,6 +34,7 @@ public:
 
 	void RenderObstacles(SDL_Renderer*);
 
+	bool hoppedOver();
 
 private:
 	//The X and Y offsets of the dot
@@ -51,4 +52,5 @@ private:
 	DirectionFacing DF;
 
 	int jumpCounter;
+
 };

@@ -1,7 +1,9 @@
 #pragma once
 #include "Game.h"
 
-
+#define PLATFORMH_ONE screenH-20
+#define PLATFORMH_TWO screenH-200
+#define JUMPDIST DOT_VEL*10
 
 Player::Player() {
 	mPosX = 0;
@@ -23,7 +25,7 @@ void Player::handleEvent(SDL_Event& e) {
 	{									////////<<<< meaning that even if you are holding key it will still by 10fps vel
 		switch (e.key.keysym.sym)
 		{
-		case SDLK_UP: mVelY -= DOT_VEL*3; break;
+		case SDLK_UP: mVelY -= JUMPDIST; break;
 		//case SDLK_DOWN: mVelY += DOT_VEL; break;
 		case SDLK_LEFT: mVelX -= DOT_VEL;
 			if (DF == RIGHT) {
@@ -51,7 +53,7 @@ void Player::handleEvent(SDL_Event& e) {
 	{
 		switch (e.key.keysym.sym)
 		{
-		case SDLK_UP: mVelY += DOT_VEL*3; break;
+		case SDLK_UP: mVelY += JUMPDIST; break;
 		//case SDLK_DOWN: mVelY -= DOT_VEL; break;
 		case SDLK_LEFT: mVelX += DOT_VEL; break;
 		case SDLK_RIGHT: mVelX -= DOT_VEL; break;
@@ -78,6 +80,21 @@ void Player::move() {
 		//Move back
 		mPosY -= mVelY;
 	}
+
+	//PREVENT JUMPING WHERE NOT ALLOWED
+	if (hoppedOver()) { 
+		mPosY -= mVelY;
+	}
+}
+bool Player::hoppedOver() {
+	for (int i = TOTALOBSTACLES - 1; i >= GOODPLATFORMONE; i--) { //need to start form the top not bottom
+		if ((mPosX >= Obstacle[i].x) && (mPosX <= Obstacle[i].x + Obstacle[i].w)) {
+			if ((mPosY< Obstacle[i].y) && (mPosY - mVelY > Obstacle[i].y)) {
+				return true;
+			}
+		}
+	}
+	return false;
 }
 
 void Player::positiveGravity() {
@@ -104,14 +121,14 @@ bool Player::Collision() {
 
 void Player::LoadAllObstacles() {
 	//first floor
-	Obstacle[GOODPLATFORMONE] = { 0,screenH - 20,screenW / 3,20 };
-	Obstacle[BADPLATFORMONE] = { screenW / 3,screenH - 20,screenW / 3,20 };
-	Obstacle[GOODPLATFORMTWO]= { 2*screenW / 3,screenH - 20,screenW / 3,20 };
+	Obstacle[GOODPLATFORMONE] = { 0,PLATFORMH_ONE,screenW / 3,20 };
+	Obstacle[BADPLATFORMONE] = { screenW / 3,PLATFORMH_ONE,screenW / 3,20 };
+	Obstacle[GOODPLATFORMTWO]= { 2*screenW / 3,PLATFORMH_ONE,screenW / 3,20 };
 
 	//second floor
-	Obstacle[FLOORTWOGOODPLATFORMONE] = { 0,screenH - 300,screenW / 3 - 30,20 };
-	Obstacle[FLOORTWOBADPLATFORMONE]= { screenW/3 - 30,screenH - 300,screenW / 3 -30,20 };
-	Obstacle[FLOORTWOGOODPLATFORMTWO]= { 2*screenW/3 - 60,screenH - 300,screenW / 3 -40,20 };
+	Obstacle[FLOORTWOGOODPLATFORMONE] = { 0,PLATFORMH_TWO,screenW / 3 - 30,20 };
+	Obstacle[FLOORTWOBADPLATFORMONE]= { screenW/3 - 30,PLATFORMH_TWO,screenW / 3 -30,20 };
+	Obstacle[FLOORTWOGOODPLATFORMTWO]= { 2*screenW/3 - 60,PLATFORMH_TWO,screenW / 3 -40,20 };
 }
 void Player::RenderObstacles(SDL_Renderer* gRenderer) {
 	SDL_SetRenderDrawColor(gRenderer, 0, 255, 0, 255); //green
