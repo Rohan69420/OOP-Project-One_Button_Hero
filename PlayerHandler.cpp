@@ -1,6 +1,8 @@
 #pragma once
 #include "Game.h"
 
+
+
 Player::Player() {
 	mPosX = 0;
 	mPosY = screenH-20-DOT_HEIGHT;
@@ -12,7 +14,7 @@ Player::Player() {
 	DF = RIGHT; //persisting issue that it gets reset to this variable once scope ends but we dont need to tackle this issue in our original plan
 
 	LoadAllObstacles();
-
+	
 	//jump counter capped to 3 i.e, three jumps maximum allowed 
 	jumpCounter = 3;
 }
@@ -88,7 +90,9 @@ bool Player::Collision() {
 		return true;
 	}
 
-	//collision with first row obstacles
+	//collision with obstacles
+
+	//careful that this only works because increments occur in multiple of 10 and gravity is 2.
 	for (int i = TOTALOBSTACLES - 1; i >= GOODPLATFORMONE; i--) { //need to start form the top not bottom
 		if (((mPosY + DOT_HEIGHT) == Obstacle[i].y)&&(mPosX>=Obstacle[i].x && mPosX<=Obstacle[i].x+Obstacle[i].w)) {
 			return true;
@@ -99,9 +103,12 @@ bool Player::Collision() {
 }
 
 void Player::LoadAllObstacles() {
+	//first floor
 	Obstacle[GOODPLATFORMONE] = { 0,screenH - 20,screenW / 3,20 };
 	Obstacle[BADPLATFORMONE] = { screenW / 3,screenH - 20,screenW / 3,20 };
 	Obstacle[GOODPLATFORMTWO]= { 2*screenW / 3,screenH - 20,screenW / 3,20 };
+
+	//second floor
 	Obstacle[FLOORTWOGOODPLATFORMONE] = { 0,screenH - 300,screenW / 3 - 30,20 };
 	Obstacle[FLOORTWOBADPLATFORMONE]= { screenW/3 - 30,screenH - 300,screenW / 3 -30,20 };
 	Obstacle[FLOORTWOGOODPLATFORMTWO]= { 2*screenW/3 - 60,screenH - 300,screenW / 3 -40,20 };
