@@ -279,14 +279,6 @@ bool Game::loadMedia() {
 	
 
 
-
-	//images
-
-	if (!AllTexture.loadFromFile(gRenderer, BIGLOGO, "images/LOGO.png")) {
-		std::cout << "Failed to load the biglogo image!" << std::endl;
-	}
-	
-
 	//SOUND AREA
 
 
@@ -297,10 +289,22 @@ bool Game::loadMedia() {
 		std::cout << "Unable to load all sounds from file!!!" << std::endl;
 	}
 
+	//images
+
+	if (!AllTexture.loadFromFile(gRenderer, BIGLOGO, "images/LOGO.png")) {
+		std::cout << "Failed to load the biglogo image!" << std::endl;
+	}
+
 	if (!AllTexture.loadFromFile(gRenderer,GSPRITESHEETTEXTURE,"nicepng60pxw.png"))
 	{
 		std::cout<<"Failed to load walking animation texture!\n"<<std::endl;
 		//success = false;
+	}
+	if (!AllTexture.loadFromFile(gRenderer, WALLTEXTURE, "WallAtMyExpense.png")) {
+		std::cout << "Failed to load the wall texture!" << std::endl;
+	}
+	if (!AllTexture.loadFromFile(gRenderer, LAVA, "Lava.png")) {
+		std::cout << "Failed to load the lava texture!" << std::endl;
 	}
 	if (!AllTexture.loadFromFile(gRenderer, FIRSTMAP, "Map1.png")) {
 		std::cout << "Failed to load the first background map image" << std::endl;
@@ -389,4 +393,19 @@ void gameSounds::playGlobalMusic() {
 void Player::render(SDL_Renderer* gRenderer, SDL_Rect* currentClip) {
 	//Show the dot
 	AllTexture.render(gRenderer, GSPRITESHEETTEXTURE, mPosX, mPosY, currentClip, 0.0f, 0, FlipVal);
+}
+void Player::RenderObstacles(SDL_Renderer* gRenderer) {
+
+	//going to use a large ass image, cant be bothered with tileset mapping rn
+
+	SDL_SetRenderDrawColor(gRenderer, 0, 255, 0, 255); //green
+	for (int i = GOODPLATFORMONE;i <= FLOORTHREEGOODPLATFORMTWO;i++) {
+		AllTexture.render(gRenderer, WALLTEXTURE, Obstacle[i].x, Obstacle[i].y, &Obstacle[i]);
+		//SDL_RenderFillRect(gRenderer, &Obstacle[i]);
+	}
+	SDL_SetRenderDrawColor(gRenderer, 255, 0, 0, 255); //red
+	for (int i = BADPLATFORMONE;i <= FLOORTWOBADPLATFORMTWO;i++) {
+		AllTexture.render(gRenderer, LAVA, Obstacle[i].x, Obstacle[i].y, &Obstacle[i]);
+		//SDL_RenderFillRect(gRenderer, &Obstacle[i]);
+	}
 }
