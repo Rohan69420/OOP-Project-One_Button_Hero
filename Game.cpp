@@ -26,7 +26,7 @@ textureClass AllTexture;
 gameSounds MegaSoundObj;
 
 Mix_Music* gMusic;
-std::stringstream timeInText; ///for the timer text
+std::stringstream timeInText,oofInText; ///for the timer text
 SDL_Color BlackColor = { 0,0,0 };
 
 Player P1;
@@ -44,6 +44,7 @@ Game::Game() { //constructor
 	tickStarted = false;
 
 	launchedLoadingScreen = false;
+	oofCount = 0;
 }
 Game::~Game() { //destructor
 	SDL_DestroyWindow(window);
@@ -169,6 +170,7 @@ void Game::draw() {
 	//check collision before drawing
 	if (P1.BadCollision()) {
 		P1.ResetPos();
+		oofCount++;
 	}
 	// Clear screen
 	MapRunning = true;
@@ -185,11 +187,17 @@ void Game::draw() {
 
 	
 
-	timeInText.str(""); //Lets try without his X, TURNS OUT THIS IS FOR CLEARING THE PAST TEXT?
+	timeInText.str(""); // TURNS OUT THIS IS FOR CLEARING THE PAST TEXT i.e, reset
 	timeInText << "Time passed: " << (SDL_GetTicks() - startTime) /1000<<setw(5)<<" s";
 	
 	AllTexture.loadFromRenderedText(gRenderer,GTIMER, timeInText.str().c_str(), BlackColor, gfont);
 	AllTexture.render(gRenderer,GTIMER,screenW - TIMERWIDTH, 0);
+
+	oofInText.str(""); // TURNS OUT THIS IS FOR CLEARING THE PAST TEXT i.e, reset
+	oofInText << "Oof counter: " << oofCount<< setw(5);
+
+	AllTexture.loadFromRenderedText(gRenderer, GOOFCOUNTER, oofInText.str().c_str(), BlackColor, gfont);
+	AllTexture.render(gRenderer, GOOFCOUNTER, 0, 0);
 
 	//render obstacles
 	P1.RenderObstacles(gRenderer);

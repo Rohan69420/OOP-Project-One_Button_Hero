@@ -61,6 +61,7 @@ private:
 	bool launchedLoadingScreen;
 	SDL_Rect ProgressBarOuter, ProgressBarInner;
 	SDL_Rect SpriteClips[STATIONARY_ANIMATION_FRAMES];
+	int oofCount;
 };
 
 // Might not need this \|/
