@@ -3,7 +3,7 @@
 
 Player::Player() {
 	mPosX = 0;
-	mPosY = 0;
+	mPosY = screenH-20-DOT_HEIGHT;
 	mVelX = 0;
 	mVelY = 0;
 
@@ -89,8 +89,8 @@ bool Player::Collision() {
 	}
 
 	//collision with first row obstacles
-	for (int i = 0; i < TOTALOBSTACLES; i++) {
-		if ((mPosY + DOT_WIDTH) == Obstacle[i].y) {
+	for (int i = TOTALOBSTACLES - 1; i >= GOODPLATFORMONE; i--) { //need to start form the top not bottom
+		if (((mPosY + DOT_HEIGHT) == Obstacle[i].y)&&(mPosX>=Obstacle[i].x && mPosX<=Obstacle[i].x+Obstacle[i].w)) {
 			return true;
 		}
 	}
@@ -102,11 +102,17 @@ void Player::LoadAllObstacles() {
 	Obstacle[GOODPLATFORMONE] = { 0,screenH - 20,screenW / 3,20 };
 	Obstacle[BADPLATFORMONE] = { screenW / 3,screenH - 20,screenW / 3,20 };
 	Obstacle[GOODPLATFORMTWO]= { 2*screenW / 3,screenH - 20,screenW / 3,20 };
+	Obstacle[FLOORTWOGOODPLATFORMONE] = { 0,screenH - 300,screenW / 3 - 30,20 };
+	Obstacle[FLOORTWOBADPLATFORMONE]= { screenW/3 - 30,screenH - 300,screenW / 3 -30,20 };
+	Obstacle[FLOORTWOGOODPLATFORMTWO]= { 2*screenW/3 - 60,screenH - 300,screenW / 3 -40,20 };
 }
 void Player::RenderObstacles(SDL_Renderer* gRenderer) {
-	SDL_SetRenderDrawColor(gRenderer, 0, 255, 0, 255);
-	SDL_RenderFillRect(gRenderer,&Obstacle[GOODPLATFORMONE]);
-	SDL_RenderFillRect(gRenderer, &Obstacle[GOODPLATFORMTWO]);
-	SDL_SetRenderDrawColor(gRenderer, 255, 0, 0, 255);
-	SDL_RenderFillRect(gRenderer, &Obstacle[BADPLATFORMONE]);
+	SDL_SetRenderDrawColor(gRenderer, 0, 255, 0, 255); //green
+	for (int i = GOODPLATFORMONE;i <= FLOORTWOGOODPLATFORMTWO;i++) {
+		SDL_RenderFillRect(gRenderer, &Obstacle[i]);
+	}
+	SDL_SetRenderDrawColor(gRenderer, 255, 0, 0, 255); //red
+	for (int i = BADPLATFORMONE;i <= FLOORTWOBADPLATFORMONE;i++) {
+		SDL_RenderFillRect(gRenderer, &Obstacle[i]);
+	}
 }
