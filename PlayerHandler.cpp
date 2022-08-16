@@ -3,9 +3,11 @@
 
 #define PLATFORMH_ONE screenH-20
 #define PLATFORMH_TWO screenH-200
+#define PLATFORMH_THREE screenH-400
 #define JUMPDIST DOT_VEL*10
+#define PLATFORMTHICC 20
 
-Player::Player() {
+Player::Player() { //need to overload for different levels ig, position wise 
 	mPosX = 0;
 	mPosY = screenH-20-DOT_HEIGHT;
 	mVelX = 0;
@@ -110,9 +112,15 @@ bool Player::Collision() {
 	//collision with obstacles
 
 	//careful that this only works because increments occur in multiple of 10 and gravity is 2.
-	for (int i = TOTALOBSTACLES - 1; i >= GOODPLATFORMONE; i--) { //need to start form the top not bottom
-		if (((mPosY + DOT_HEIGHT) == Obstacle[i].y)&&(mPosX>=Obstacle[i].x && mPosX<=Obstacle[i].x+Obstacle[i].w)) {
+	for (int i = TOTALOBSTACLES - 1; i >= GOODPLATFORMONE; i--) { 
+		//need to start form the top not bottom
+		
+		// need to move hitbox to center
+		if ((mPosY + DOT_HEIGHT) == Obstacle[i].y){
+		if (( (mPosX+DOT_WIDTH/2) >= Obstacle[i].x) && ( (mPosX+DOT_WIDTH/2) <= Obstacle[i].x + Obstacle[i].w)) {
 			return true;
+
+		}
 		}
 	}
 
@@ -121,22 +129,29 @@ bool Player::Collision() {
 
 void Player::LoadAllObstacles() {
 	//first floor
-	Obstacle[GOODPLATFORMONE] = { 0,PLATFORMH_ONE,screenW / 3,20 };
-	Obstacle[BADPLATFORMONE] = { screenW / 3,PLATFORMH_ONE,screenW / 3,20 };
-	Obstacle[GOODPLATFORMTWO]= { 2*screenW / 3,PLATFORMH_ONE,screenW / 3,20 };
+	Obstacle[GOODPLATFORMONE] = { 0,PLATFORMH_ONE,screenW / 3,PLATFORMTHICC };
+	Obstacle[BADPLATFORMONE] = { screenW / 3,PLATFORMH_ONE,screenW / 3,PLATFORMTHICC };
+	Obstacle[GOODPLATFORMTWO]= { 2*screenW / 3,PLATFORMH_ONE,screenW / 3,PLATFORMTHICC };
 
 	//second floor
-	Obstacle[FLOORTWOGOODPLATFORMONE] = { 0,PLATFORMH_TWO,screenW / 3 - 30,20 };
-	Obstacle[FLOORTWOBADPLATFORMONE]= { screenW/3 - 30,PLATFORMH_TWO,screenW / 3 -30,20 };
-	Obstacle[FLOORTWOGOODPLATFORMTWO]= { 2*screenW/3 - 60,PLATFORMH_TWO,screenW / 3 -40,20 };
+	Obstacle[FLOORTWOGOODPLATFORMONE] = { 0,PLATFORMH_TWO,screenW / 6,PLATFORMTHICC };
+	Obstacle[FLOORTWOBADPLATFORMONE] =  { Obstacle[FLOORTWOGOODPLATFORMONE].x + Obstacle[FLOORTWOGOODPLATFORMONE].w,PLATFORMH_TWO,screenW / 8,PLATFORMTHICC };
+	Obstacle[FLOORTWOGOODPLATFORMTWO] = { Obstacle[FLOORTWOBADPLATFORMONE].x + Obstacle[FLOORTWOBADPLATFORMONE].w,PLATFORMH_TWO,screenW / 3,PLATFORMTHICC };
+	Obstacle[FLOORTWOBADPLATFORMTWO] = { Obstacle[FLOORTWOGOODPLATFORMTWO].x+ Obstacle[FLOORTWOGOODPLATFORMTWO].w,PLATFORMH_TWO,Obstacle[FLOORTWOBADPLATFORMONE].w,PLATFORMTHICC };
+	Obstacle[FLOORTWOGOODPLATFORMTHREE] = { Obstacle[FLOORTWOBADPLATFORMTWO].x+ Obstacle[FLOORTWOBADPLATFORMTWO].w,PLATFORMH_TWO,screenW/6,PLATFORMTHICC };
+
+	//thirdfloor
+	Obstacle[FLOORTHREEGOODPLATFORMONE] = { Obstacle[FLOORTWOBADPLATFORMONE].x + 10,PLATFORMH_THREE,screenW / 6,PLATFORMTHICC };
+	Obstacle[FLOORTHREEGOODPLATFORMTWO] = { Obstacle[FLOORTWOBADPLATFORMTWO].x + Obstacle[FLOORTWOBADPLATFORMTWO].w,PLATFORMH_THREE,screenW / 6,PLATFORMTHICC };
 }
+
 void Player::RenderObstacles(SDL_Renderer* gRenderer) {
 	SDL_SetRenderDrawColor(gRenderer, 0, 255, 0, 255); //green
-	for (int i = GOODPLATFORMONE;i <= FLOORTWOGOODPLATFORMTWO;i++) {
+	for (int i = GOODPLATFORMONE;i <= FLOORTHREEGOODPLATFORMTWO;i++) {
 		SDL_RenderFillRect(gRenderer, &Obstacle[i]);
 	}
 	SDL_SetRenderDrawColor(gRenderer, 255, 0, 0, 255); //red
-	for (int i = BADPLATFORMONE;i <= FLOORTWOBADPLATFORMONE;i++) {
+	for (int i = BADPLATFORMONE;i <= FLOORTWOBADPLATFORMTWO;i++) {
 		SDL_RenderFillRect(gRenderer, &Obstacle[i]);
 	}
 }
