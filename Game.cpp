@@ -166,7 +166,10 @@ void Game::handleEvents() {
 }
 void Game::draw() {
 
-	
+	//check collision before drawing
+	if (P1.BadCollision()) {
+		P1.ResetPos();
+	}
 	// Clear screen
 	MapRunning = true;
 		SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -398,12 +401,12 @@ void Player::RenderObstacles(SDL_Renderer* gRenderer) {
 
 	//going to use a large ass image, cant be bothered with tileset mapping rn
 
-	SDL_SetRenderDrawColor(gRenderer, 0, 255, 0, 255); //green
+	//SDL_SetRenderDrawColor(gRenderer, 0, 255, 0, 255); //green
 	for (int i = GOODPLATFORMONE;i <= FLOORTHREEGOODPLATFORMTWO;i++) {
 		AllTexture.render(gRenderer, WALLTEXTURE, Obstacle[i].x, Obstacle[i].y, &Obstacle[i]);
 		//SDL_RenderFillRect(gRenderer, &Obstacle[i]);
 	}
-	SDL_SetRenderDrawColor(gRenderer, 255, 0, 0, 255); //red
+	//SDL_SetRenderDrawColor(gRenderer, 255, 0, 0, 255); //red
 	for (int i = BADPLATFORMONE;i <= FLOORTWOBADPLATFORMTWO;i++) {
 		AllTexture.render(gRenderer, LAVA, Obstacle[i].x, Obstacle[i].y, &Obstacle[i]);
 		//SDL_RenderFillRect(gRenderer, &Obstacle[i]);

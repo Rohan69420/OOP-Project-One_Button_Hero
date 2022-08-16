@@ -35,6 +35,10 @@ public:
 	void RenderObstacles(SDL_Renderer*);
 
 	bool hoppedOver();
+	
+	bool BadCollision();
+
+	void ResetPos();
 
 private:
 	//The X and Y offsets of the dot

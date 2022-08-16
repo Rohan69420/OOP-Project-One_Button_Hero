@@ -126,7 +126,16 @@ bool Player::Collision() {
 
 	return false;
 }
-
+bool Player::BadCollision() {
+	for (int i = BADPLATFORMONE;i <= FLOORTWOBADPLATFORMTWO;i++) {
+		if ((mPosY + DOT_HEIGHT) == Obstacle[i].y) {
+			if (((mPosX + DOT_WIDTH / 2) >= Obstacle[i].x) && ((mPosX + DOT_WIDTH / 2) <= Obstacle[i].x + Obstacle[i].w)) {
+				return true;
+			}
+		}
+	}
+	return false;
+}
 void Player::LoadAllObstacles() {
 	//first floor
 	Obstacle[GOODPLATFORMONE] = { 0,PLATFORMH_ONE,screenW / 3,PLATFORMTHICC };
@@ -144,4 +153,8 @@ void Player::LoadAllObstacles() {
 	Obstacle[FLOORTHREEGOODPLATFORMONE] = { Obstacle[FLOORTWOBADPLATFORMONE].x + Obstacle[FLOORTWOBADPLATFORMONE].w,PLATFORMH_THREE,screenW / 3,PLATFORMTHICC };
 	Obstacle[FLOORTHREEGOODPLATFORMTWO] = { Obstacle[FLOORTWOBADPLATFORMTWO].x + Obstacle[FLOORTWOBADPLATFORMTWO].w,PLATFORMH_THREE,screenW / 4,PLATFORMTHICC };
 }
-
+void Player::ResetPos() {
+	//first level reset
+	mPosX = 0;
+	mPosY = screenH - 20 - DOT_HEIGHT;
+}
