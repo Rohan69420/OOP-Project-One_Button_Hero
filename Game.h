@@ -10,8 +10,9 @@
 #include <sstream>
 #include "enumerators.h"
 #include "Objects.h"
+#include "Checkpoints.h"
 
-#define STATIONARY_ANIMATION_FRAMES 8
+
 
 using namespace std;
 
@@ -52,6 +53,7 @@ private:
 	GameState gamestate;
 	TextureId WhichMap;
 	int frame;
+	int coinframe;
 	bool MapRunning,tickStarted;
 
 	Uint32 startTime;
@@ -62,6 +64,7 @@ private:
 	SDL_Rect ProgressBarOuter, ProgressBarInner;
 	SDL_Rect SpriteClips[STATIONARY_ANIMATION_FRAMES];
 	int oofCount;
+	int currentLevel;
 };
 
 // Might not need this \|/

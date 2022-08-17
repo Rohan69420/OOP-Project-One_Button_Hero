@@ -30,6 +30,7 @@ std::stringstream timeInText,oofInText; ///for the timer text
 SDL_Color BlackColor = { 0,0,0 };
 
 Player P1;
+Checkpoint CP1;
 
 Game::Game() { //constructor
 	gamestate = GameState::PLAY;
@@ -38,6 +39,7 @@ Game::Game() { //constructor
 	WhichMap = FIRSTMAP;
 	//STATIONARY_ANIMATION_FRAMES = 8;
 	frame = 0;
+	coinframe = 0;
 	//SpriteClips = new SDL_Rect[STATIONARY_ANIMATION_FRAMES]; //LOOKS LIKE IT WORKED
 
 	startTime = 0;
@@ -45,6 +47,7 @@ Game::Game() { //constructor
 
 	launchedLoadingScreen = false;
 	oofCount = 0;
+	currentLevel = 1;
 }
 Game::~Game() { //destructor
 	SDL_DestroyWindow(window);
@@ -185,6 +188,9 @@ void Game::draw() {
 	P1.render(gRenderer,currentClip);
 	/*AllTexture.render(gRenderer,GSPRITESHEETTEXTURE,(SpriteLocationX - currentClip->w) / 2, (SpriteLocationY - currentClip->h) / 2, currentClip);*/
 
+	//rendering coin
+	
+	CP1.renderCheckPoint(coinframe);
 	
 
 	timeInText.str(""); // TURNS OUT THIS IS FOR CLEARING THE PAST TEXT i.e, reset
@@ -207,13 +213,24 @@ void Game::draw() {
 
 	//Go to next frame
 	++frame;
+	++coinframe;
 
 	//Cycle animation
 	if (frame / 8 >= STATIONARY_ANIMATION_FRAMES)
 	{
 		frame = 0;
 	}
+	if (coinframe / 6 >= COIN_ANIMATION_FRAMES) {
+		coinframe = 0;
+	}
 	
+	//check if checkpoint reached
+	if (CP1.reachedCheckPoint(P1.getPlayerXPos(), P1.getPlayerYPos())) {
+
+		//call transition
+		//LevelTransition();
+
+	}
 }
 
 
@@ -317,6 +334,9 @@ bool Game::loadMedia() {
 	if (!AllTexture.loadFromFile(gRenderer, LAVA, "Lava.png")) {
 		std::cout << "Failed to load the lava texture!" << std::endl;
 	}
+	if (!AllTexture.loadFromFile(gRenderer, CHECKCOIN, "checkcoin1.png")) {
+		std::cout << "Failed to load the coin sprite" << std::endl;
+	}
 	if (!AllTexture.loadFromFile(gRenderer, FIRSTMAP, "Map1.png")) {
 		std::cout << "Failed to load the first background map image" << std::endl;
 	}
@@ -419,4 +439,9 @@ void Player::RenderObstacles(SDL_Renderer* gRenderer) {
 		AllTexture.render(gRenderer, LAVA, Obstacle[i].x, Obstacle[i].y, &Obstacle[i]);
 		//SDL_RenderFillRect(gRenderer, &Obstacle[i]);
 	}
+}
+
+void Checkpoint::renderCheckPoint(int coinframe) { //keep this in playerhandler for now
+	SDL_Rect* CurrentCoinFrame = &CheckpointSprites[coinframe / 6]; //issue here ig
+	AllTexture.render(gRenderer, CHECKCOIN, ckPoint[CHECKPOINTONE].x, ckPoint[CHECKPOINTONE].y, CurrentCoinFrame);
 }

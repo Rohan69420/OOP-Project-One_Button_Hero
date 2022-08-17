@@ -1,11 +1,12 @@
 #pragma once
 #include "Game.h"
-
+#ifndef PLATFORMH_ONE
 #define PLATFORMH_ONE screenH-20
 #define PLATFORMH_TWO screenH-200
 #define PLATFORMH_THREE screenH-400
 #define JUMPDIST DOT_VEL*10
 #define PLATFORMTHICC 20
+#endif
 
 Player::Player() { //need to overload for different levels ig, position wise 
 	mPosX = 0;
@@ -157,4 +158,10 @@ void Player::ResetPos() {
 	//first level reset
 	mPosX = 0;
 	mPosY = screenH - 20 - DOT_HEIGHT;
+}
+int Player::getPlayerXPos() {
+	return mPosX;
+}
+int Player::getPlayerYPos() {
+	return mPosY;
 }

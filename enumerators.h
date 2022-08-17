@@ -9,6 +9,7 @@ enum TextureId {
 	BIGLOGO,
 	WALLTEXTURE,
 	LAVA,
+	CHECKCOIN,
 	TOTALTEXTURES
 };
 enum ObstacleId {
@@ -27,4 +28,8 @@ enum ObstacleId {
 	FLOORTWOBADPLATFORMTWO,
 
 	TOTALOBSTACLES
+};
+enum Checkpoints {
+	CHECKPOINTONE,
+	TOTALCHECKPOINTS
 };
