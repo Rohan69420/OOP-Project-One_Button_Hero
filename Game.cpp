@@ -153,14 +153,14 @@ void Game::handleEvents() {
 			}
 			else {
 				P1.handleEvent(evnt);
-				P1.move();
+				P1.move(currentLevel);
 				draw();
 			}
 			break;
 
 			case SDL_KEYUP:
 				P1.handleEvent(evnt);
-				P1.move();
+				P1.move(currentLevel);
 				draw();
 			break;
 
@@ -477,7 +477,7 @@ void Player::RenderObstacles(SDL_Renderer* gRenderer,int currentLevel) {
 
 	//level two seperate obstacle rendering
 	if (currentLevel == 2) {
-		AllTexture.render(gRenderer, WALLTEXTURE, 0, 0, &Obstacle[LVLTWOGOODPLATFORMTHREE]);
+		AllTexture.render(gRenderer, WALLTEXTURE, Obstacle[LVLTWOGOODPLATFORMTHREE].x, Obstacle[LVLTWOGOODPLATFORMTHREE].y, &Obstacle[LVLTWOGOODPLATFORMTHREE]);
 	}
 }
 

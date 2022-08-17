@@ -63,7 +63,7 @@ void Player::handleEvent(SDL_Event& e) {
 		}
 	}
 }
-void Player::move() {
+void Player::move(int currentLevel) {
 	//Move the dot left or right
 	mPosX += mVelX;						///<<<<<<<<<< move as much as the velocity
 
@@ -85,13 +85,13 @@ void Player::move() {
 	}
 
 	//PREVENT JUMPING WHERE NOT ALLOWED
-	if (hoppedOver(1)) { 
+	if (hoppedOver(currentLevel)) { 
 		mPosY -= mVelY;
 	}
 }
 bool Player::hoppedOver(int currentLevel) {
 	if (currentLevel == 1) {
-		for (int i = TOTALOBSTACLES - 1; i >= GOODPLATFORMONE; i--) { //need to start form the top not bottom
+		for (int i = TOTALOBSTACLES - 2; i >= GOODPLATFORMONE; i--) { //need to start form the top not bottom
 			if ((mPosX >= Obstacle[i].x) && (mPosX <= Obstacle[i].x + Obstacle[i].w)) {
 				if ((mPosY < Obstacle[i].y) && (mPosY - mVelY > Obstacle[i].y)) {
 					return true;
@@ -192,7 +192,7 @@ void Player::ResetPos(int currentLevel) {
 	}
 	if (currentLevel == 2) {
 		mPosX = 0;
-		mPosY = screenH - 40 - DOT_HEIGHT;
+		mPosY = Obstacle[LVLTWOGOODPLATFORMTHREE].y-DOT_HEIGHT;
 	}
 }
 int Player::getPlayerXPos() {

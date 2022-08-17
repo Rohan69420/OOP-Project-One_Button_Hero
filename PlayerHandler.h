@@ -21,7 +21,7 @@ public:
 	void handleEvent(SDL_Event& e);					///<<<<<< updated event handler
 
 	//Moves the dot
-	void move();	///<<<<<<<<<	-	-	-	-	-	-	-		-
+	void move(int currentLevel);	///<<<<<<<<<	-	-	-	-	-	-	-		-
 
 	//Shows the dot on the screen
 	void render(SDL_Renderer *gRenderer,SDL_Rect *);
