@@ -47,6 +47,8 @@ public:
 	void ClearGlobalRenderer();
 	void loadWelcomeText();
 	void LevelTransition();
+	void RenderAnimatedCharacter();
+	void RenderAnimatedCheckpoint();
 private:
 	SDL_Window* window;
 	SDL_Renderer* renderer;

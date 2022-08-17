@@ -184,39 +184,22 @@ void Game::draw() {
 		
 		
 
-		//render background image i guess
+		//render background map 1
 		AllTexture.render(gRenderer, WhichMap, 0, 0);
 
 		//Render current frame
-		SDL_Rect* currentClip = &SpriteClips[frame / 8]; //adjust framerate
-		P1.render(gRenderer, currentClip);
+		
 		/*AllTexture.render(gRenderer,GSPRITESHEETTEXTURE,(SpriteLocationX - currentClip->w) / 2, (SpriteLocationY - currentClip->h) / 2, currentClip);*/
-
-		//rendering coin
-
-		CP1.renderCheckPoint(coinframe);
-
 
 		
 
 		//render obstacles
 		P1.RenderObstacles(gRenderer);
 
+		RenderAnimatedCharacter(); //character
+		RenderAnimatedCheckpoint(); //coin
+
 		
-
-		//Go to next frame
-		++frame;
-		++coinframe;
-
-		//Cycle animation
-		if (frame / 8 >= STATIONARY_ANIMATION_FRAMES)
-		{
-			frame = 0;
-		}
-		if (coinframe / 6 >= COIN_ANIMATION_FRAMES) {
-			coinframe = 0;
-		}
-
 		//check if checkpoint reached
 		if (CP1.reachedCheckPoint(P1.getPlayerXPos(), P1.getPlayerYPos())) {
 
@@ -230,7 +213,7 @@ void Game::draw() {
 	if (currentLevel == 2) {
 		SDL_SetRenderDrawColor(gRenderer, 255, 255, 255, 255);
 		SDL_RenderClear(gRenderer);
-		AllTexture.render(gRenderer, LEVELTWOMAP, 0, 0);
+		AllTexture.render(gRenderer, WhichMap, 0, 0);
 	}
 
 	timeInText.str(""); // TURNS OUT THIS IS FOR CLEARING THE PAST TEXT i.e, reset
@@ -247,7 +230,31 @@ void Game::draw() {
 	//Update screen
 	SDL_RenderPresent(gRenderer);
 }
+void Game::RenderAnimatedCheckpoint() {
+	//rendering coin
 
+	CP1.renderCheckPoint(coinframe);
+	//next frame
+	++coinframe;
+
+	//cycle animation
+	if (coinframe / 6 >= COIN_ANIMATION_FRAMES) {
+		coinframe = 0;
+	}
+
+}
+
+void Game::RenderAnimatedCharacter() {
+	SDL_Rect* currentClip = &SpriteClips[frame / 8]; //adjust framerate
+	P1.render(gRenderer, currentClip); //RenderCharacter here
+	//Go to next frame
+	++frame;
+	//Cycle animation
+	if (frame / 8 >= STATIONARY_ANIMATION_FRAMES)
+	{
+		frame = 0;
+	}
+}
 
 void Game::loadWelcomeText() {
 	
@@ -415,6 +422,7 @@ void Game::ClearGlobalRenderer() {
 
 void Game::LevelTransition() {
 	currentLevel = 2;
+	WhichMap = LEVELTWOMAP;
 	SDL_SetRenderDrawColor(gRenderer, 255, 255, 255, 255);
 	SDL_RenderClear(gRenderer);
 	AllTexture.loadFromRenderedText(gRenderer, NEWLEVEL, "Level Two",BlackColor,gfont);
