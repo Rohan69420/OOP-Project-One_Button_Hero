@@ -10,20 +10,24 @@ Boulder::Boulder() {
 bool Boulder::BoulderCollision(int PlayerX, int PlayerY) {
 	//accuracy can be enhanced, just working prototype for now
 	
-	if (PlayerY >= BoulderRect.y && PlayerY <= BoulderRect.y + BoulderRect.h) {
-		if (PlayerX >= BoulderRect.x && PlayerX <= BoulderRect.x + BoulderRect.w) {
+	if (PlayerY >= BoulderRect.y && PlayerY <= BoulderRect.y + BoulderRect.h) { //THIS PAINFUL
+		std::cout << "Y collided" << std::endl;
+		if ((PlayerX >= BoulderRect.x) && (PlayerX <= BoulderRect.x + BoulderRect.w)) {
+			std::cout << "Total collision" << std::endl;
 			return true;
 		}
 	}
 	return false;
 }
 
-void Boulder::DropBoulder() {
+bool Boulder::DropBoulder() {
 	if (BoulderRect.y<=screenH){
 		BoulderRect.y += 10;
+		return true;
 	}
 	else {
 		SpawnNewBoulder();
+		return false; //false is no drop, spawn instead
 	}
 }
 void Boulder :: SpawnNewBoulder() {

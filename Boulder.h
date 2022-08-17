@@ -12,6 +12,6 @@ public:
 	bool BoulderCollision(int PlayerX, int PlayerY);
 	void renderBoulder(int boulderframe);
 	void SpawnNewBoulder();
-	void DropBoulder();
+	bool DropBoulder();
 	void loadBoulderSprites();
 };

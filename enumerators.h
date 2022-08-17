@@ -13,6 +13,8 @@ enum TextureId {
 	NEWLEVEL,
 	LEVELTWOMAP,
 	BOULDER,
+	BOULDERCOUNTER,
+	LIVES,
 	TOTALTEXTURES
 };
 enum ObstacleId {

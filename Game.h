@@ -67,8 +67,9 @@ public:
 	bool launchedLoadingScreen;
 	SDL_Rect ProgressBarOuter, ProgressBarInner;
 	SDL_Rect SpriteClips[STATIONARY_ANIMATION_FRAMES];
-	int oofCount;
-	int currentLevel;
+	int oofCount,boulderNumber;
+	int currentLevel,lives;
+	bool firstCollision;
 };
 
 // Might not need this \|/

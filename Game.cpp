@@ -26,8 +26,8 @@ textureClass AllTexture;
 gameSounds MegaSoundObj;
 
 Mix_Music* gMusic;
-std::stringstream timeInText,oofInText; ///for the timer text
-SDL_Color BlackColor = { 0,0,0 };
+std::stringstream timeInText,oofInText,bouldersDodged,liveCounter; ///for the timer text
+SDL_Color BlackColor = { 0,0,0 },WhiteColor={0xFF,0xFF,0xFF};
 
 Player P1;
 Checkpoint CP1;
@@ -50,6 +50,9 @@ Game::Game() { //constructor
 	launchedLoadingScreen = false;
 	oofCount = 0;
 	currentLevel = 1;
+	boulderNumber = 0;
+	lives = 3;
+	firstCollision = true;
 }
 Game::~Game() { //destructor
 	SDL_DestroyWindow(window);
@@ -196,6 +199,11 @@ void Game::draw() {
 		RenderAnimatedCharacter(); //character, player class dependent, no need any parameter passing
 		RenderAnimatedCheckpoint(CHECKPOINTONE); //coin
 
+		oofInText.str(""); // TURNS OUT THIS IS FOR CLEARING THE PAST TEXT i.e, reset
+		oofInText << "Oof counter: " << oofCount << setw(5);
+
+		AllTexture.loadFromRenderedText(gRenderer, GOOFCOUNTER, oofInText.str().c_str(), BlackColor, gfont);
+		AllTexture.render(gRenderer, GOOFCOUNTER, 0, 0);
 		
 		//check if checkpoint reached
 		if (CP1.reachedCheckPoint(P1.getPlayerXPos(), P1.getPlayerYPos())) {
@@ -212,10 +220,35 @@ void Game::draw() {
 		SDL_RenderClear(gRenderer);
 		AllTexture.render(gRenderer, WhichMap, 0, 0);
 		RenderAnimatedCharacter();
-		BOU.DropBoulder();
 		RenderAnimatedBoulder();
 
+		//test collision and increment
+		if (!BOU.DropBoulder()) {
+			++boulderNumber;
+			firstCollision = true;
+		}
+		
+		if (BOU.BoulderCollision(P1.getPlayerXPos(), P1.getPlayerYPos()) && firstCollision) {
+			--lives;
+			firstCollision = false;
+		}
+
 		P1.RenderObstacles(gRenderer, currentLevel);
+
+		//counting dodges
+		bouldersDodged.str("");
+		bouldersDodged << "Dodges: " << boulderNumber << setw(5);
+
+		AllTexture.loadFromRenderedText(gRenderer, BOULDERCOUNTER, bouldersDodged.str().c_str(), BlackColor, gfont);
+		AllTexture.render(gRenderer, BOULDERCOUNTER, 0, 0);
+
+		//counting lives
+		liveCounter.str("");
+		liveCounter << "Lives: " << lives << setw(5);
+
+		AllTexture.loadFromRenderedText(gRenderer, LIVES, liveCounter.str().c_str(), WhiteColor, gfont);
+		AllTexture.render(gRenderer, LIVES, screenW-AllTexture.getWidth(LIVES), screenH - AllTexture.getHeight(LIVES) - 20);
+		
 	}
 
 	timeInText.str(""); // TURNS OUT THIS IS FOR CLEARING THE PAST TEXT i.e, reset
@@ -224,11 +257,7 @@ void Game::draw() {
 	AllTexture.loadFromRenderedText(gRenderer, GTIMER, timeInText.str().c_str(), BlackColor, gfont);
 	AllTexture.render(gRenderer, GTIMER, screenW - TIMERWIDTH, 0);
 
-	oofInText.str(""); // TURNS OUT THIS IS FOR CLEARING THE PAST TEXT i.e, reset
-	oofInText << "Oof counter: " << oofCount << setw(5);
-
-	AllTexture.loadFromRenderedText(gRenderer, GOOFCOUNTER, oofInText.str().c_str(), BlackColor, gfont);
-	AllTexture.render(gRenderer, GOOFCOUNTER, 0, 0);
+	
 	//Update screen
 	SDL_RenderPresent(gRenderer);
 }
