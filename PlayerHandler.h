@@ -26,19 +26,19 @@ public:
 	//Shows the dot on the screen
 	void render(SDL_Renderer *gRenderer,SDL_Rect *);
 	
-	void positiveGravity();
+	void positiveGravity(int currentLevel);
 
-	bool Collision();
+	bool Collision(int currentLevel);
 
 	void LoadAllObstacles();
 
-	void RenderObstacles(SDL_Renderer*);
+	void RenderObstacles(SDL_Renderer *gRenderer,int currentLevel);
 
-	bool hoppedOver();
+	bool hoppedOver(int currentLevel);
 	
-	bool BadCollision();
+	bool BadCollision(int currentLevel);
 
-	void ResetPos();
+	void ResetPos(int currentLevel);
 
 	int getPlayerXPos();
 	

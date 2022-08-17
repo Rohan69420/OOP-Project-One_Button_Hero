@@ -119,7 +119,8 @@ void Game::gameLoop() {
 }
 void Game::handleEvents() {
 	SDL_Event evnt;
-	P1.positiveGravity();
+	P1.positiveGravity(currentLevel);
+
 	while (SDL_PollEvent(&evnt)) {
 		switch (evnt.type) {
 		case SDL_QUIT:
@@ -174,30 +175,24 @@ void Game::draw() {
 	SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
 	SDL_RenderClear(gRenderer);
 
-	if (currentLevel == 1) {
+	if (currentLevel == 1) { //level one condition
+
 		//check collision before drawing
-		if (P1.BadCollision()) {
-			P1.ResetPos();
+		if (P1.BadCollision(currentLevel)) {
+			P1.ResetPos(currentLevel);
 			oofCount++;
 		}
-		// Clear screen
-		
-		
+	
 
 		//render background map 1
 		AllTexture.render(gRenderer, WhichMap, 0, 0);
 
-		//Render current frame
-		
-		/*AllTexture.render(gRenderer,GSPRITESHEETTEXTURE,(SpriteLocationX - currentClip->w) / 2, (SpriteLocationY - currentClip->h) / 2, currentClip);*/
-
-		
 
 		//render obstacles
-		P1.RenderObstacles(gRenderer);
+		P1.RenderObstacles(gRenderer,currentLevel);
 
-		RenderAnimatedCharacter(); //character
-		RenderAnimatedCheckpoint(); //coin
+		RenderAnimatedCharacter(); //character, player class dependent, no need any parameter passing
+		RenderAnimatedCheckpoint(CHECKPOINTONE); //coin
 
 		
 		//check if checkpoint reached
@@ -210,10 +205,12 @@ void Game::draw() {
 		}
 	}
 
-	if (currentLevel == 2) {
+	if (currentLevel == 2) { //level two condition
 		SDL_SetRenderDrawColor(gRenderer, 255, 255, 255, 255);
 		SDL_RenderClear(gRenderer);
 		AllTexture.render(gRenderer, WhichMap, 0, 0);
+		RenderAnimatedCharacter();
+		P1.RenderObstacles(gRenderer, currentLevel);
 	}
 
 	timeInText.str(""); // TURNS OUT THIS IS FOR CLEARING THE PAST TEXT i.e, reset
@@ -230,10 +227,10 @@ void Game::draw() {
 	//Update screen
 	SDL_RenderPresent(gRenderer);
 }
-void Game::RenderAnimatedCheckpoint() {
+void Game::RenderAnimatedCheckpoint(int CheckRectNumber) {
 	//rendering coin
 
-	CP1.renderCheckPoint(coinframe);
+	CP1.renderCheckPoint(coinframe,CheckRectNumber);
 	//next frame
 	++coinframe;
 
@@ -423,6 +420,7 @@ void Game::ClearGlobalRenderer() {
 void Game::LevelTransition() {
 	currentLevel = 2;
 	WhichMap = LEVELTWOMAP;
+	P1.ResetPos(currentLevel);
 	SDL_SetRenderDrawColor(gRenderer, 255, 255, 255, 255);
 	SDL_RenderClear(gRenderer);
 	AllTexture.loadFromRenderedText(gRenderer, NEWLEVEL, "Level Two",BlackColor,gfont);
@@ -461,23 +459,29 @@ void Player::render(SDL_Renderer* gRenderer, SDL_Rect* currentClip) {
 	//Show the dot
 	AllTexture.render(gRenderer, GSPRITESHEETTEXTURE, mPosX, mPosY, currentClip, 0.0f, 0, FlipVal);
 }
-void Player::RenderObstacles(SDL_Renderer* gRenderer) {
+void Player::RenderObstacles(SDL_Renderer* gRenderer,int currentLevel) {
 
 	//going to use a large ass image, cant be bothered with tileset mapping rn
-
-	//SDL_SetRenderDrawColor(gRenderer, 0, 255, 0, 255); //green
-	for (int i = GOODPLATFORMONE;i <= FLOORTHREEGOODPLATFORMTWO;i++) {
-		AllTexture.render(gRenderer, WALLTEXTURE, Obstacle[i].x, Obstacle[i].y, &Obstacle[i]);
-		//SDL_RenderFillRect(gRenderer, &Obstacle[i]);
+	if (currentLevel == 1) {
+		//SDL_SetRenderDrawColor(gRenderer, 0, 255, 0, 255); //green
+		for (int i = GOODPLATFORMONE;i <= FLOORTHREEGOODPLATFORMTWO;i++) {
+			AllTexture.render(gRenderer, WALLTEXTURE, Obstacle[i].x, Obstacle[i].y, &Obstacle[i]);
+			//SDL_RenderFillRect(gRenderer, &Obstacle[i]);
+		}
+		//SDL_SetRenderDrawColor(gRenderer, 255, 0, 0, 255); //red
+		for (int i = BADPLATFORMONE;i <= FLOORTWOBADPLATFORMTWO;i++) {
+			AllTexture.render(gRenderer, LAVA, Obstacle[i].x, Obstacle[i].y, &Obstacle[i]);
+			//SDL_RenderFillRect(gRenderer, &Obstacle[i]);
+		}
 	}
-	//SDL_SetRenderDrawColor(gRenderer, 255, 0, 0, 255); //red
-	for (int i = BADPLATFORMONE;i <= FLOORTWOBADPLATFORMTWO;i++) {
-		AllTexture.render(gRenderer, LAVA, Obstacle[i].x, Obstacle[i].y, &Obstacle[i]);
-		//SDL_RenderFillRect(gRenderer, &Obstacle[i]);
+
+	//level two seperate obstacle rendering
+	if (currentLevel == 2) {
+		AllTexture.render(gRenderer, WALLTEXTURE, 0, 0, &Obstacle[LVLTWOGOODPLATFORMTHREE]);
 	}
 }
 
-void Checkpoint::renderCheckPoint(int coinframe) { //keep this in playerhandler for now
+void Checkpoint::renderCheckPoint(int coinframe,int Desti) { //keep this in playerhandler for now
 	SDL_Rect* CurrentCoinFrame = &CheckpointSprites[coinframe / 6]; //issue here ig
-	AllTexture.render(gRenderer, CHECKCOIN, ckPoint[CHECKPOINTONE].x, ckPoint[CHECKPOINTONE].y, CurrentCoinFrame);
+	AllTexture.render(gRenderer, CHECKCOIN, ckPoint[Desti].x, ckPoint[Desti].y, CurrentCoinFrame);
 }

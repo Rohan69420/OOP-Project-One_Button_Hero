@@ -9,6 +9,6 @@ private:
 public:
 	Checkpoint();
 	bool reachedCheckPoint(int PlayerX,int PlayerY);
-	void renderCheckPoint(int coinframe);
+	void renderCheckPoint(int coinframe,int Destination);
 	void initializeCpSprite();
 };

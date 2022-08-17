@@ -48,7 +48,7 @@ public:
 	void loadWelcomeText();
 	void LevelTransition();
 	void RenderAnimatedCharacter();
-	void RenderAnimatedCheckpoint();
+	void RenderAnimatedCheckpoint(int CheckRectNumber);
 private:
 	SDL_Window* window;
 	SDL_Renderer* renderer;

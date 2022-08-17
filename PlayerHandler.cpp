@@ -85,14 +85,23 @@ void Player::move() {
 	}
 
 	//PREVENT JUMPING WHERE NOT ALLOWED
-	if (hoppedOver()) { 
+	if (hoppedOver(1)) { 
 		mPosY -= mVelY;
 	}
 }
-bool Player::hoppedOver() {
-	for (int i = TOTALOBSTACLES - 1; i >= GOODPLATFORMONE; i--) { //need to start form the top not bottom
-		if ((mPosX >= Obstacle[i].x) && (mPosX <= Obstacle[i].x + Obstacle[i].w)) {
-			if ((mPosY< Obstacle[i].y) && (mPosY - mVelY > Obstacle[i].y)) {
+bool Player::hoppedOver(int currentLevel) {
+	if (currentLevel == 1) {
+		for (int i = TOTALOBSTACLES - 1; i >= GOODPLATFORMONE; i--) { //need to start form the top not bottom
+			if ((mPosX >= Obstacle[i].x) && (mPosX <= Obstacle[i].x + Obstacle[i].w)) {
+				if ((mPosY < Obstacle[i].y) && (mPosY - mVelY > Obstacle[i].y)) {
+					return true;
+				}
+			}
+		}
+	}
+	if (currentLevel == 2) { //really dont need this in level 2 ig
+		if ((mPosX >= Obstacle[LVLTWOGOODPLATFORMTHREE].x) && (mPosX <= Obstacle[LVLTWOGOODPLATFORMTHREE].x + Obstacle[LVLTWOGOODPLATFORMTHREE].w)) {
+			if ((mPosY < Obstacle[LVLTWOGOODPLATFORMTHREE].y) && (mPosY - mVelY > Obstacle[LVLTWOGOODPLATFORMTHREE].y)) {
 				return true;
 			}
 		}
@@ -100,12 +109,12 @@ bool Player::hoppedOver() {
 	return false;
 }
 
-void Player::positiveGravity() {
-	if (!Collision()) {
+void Player::positiveGravity(int currentLevel) {
+	if (!Collision(currentLevel)) {
 		mPosY += Gravity;
 	}
 }
-bool Player::Collision() {
+bool Player::Collision(int currentLevel) {
 	if ((mPosX < 0) || (mPosY < 0) || (mPosX + DOT_WIDTH) > screenW || (mPosY + DOT_HEIGHT) > screenH) {
 		return true;
 	}
@@ -113,51 +122,78 @@ bool Player::Collision() {
 	//collision with obstacles
 
 	//careful that this only works because increments occur in multiple of 10 and gravity is 2.
-	for (int i = TOTALOBSTACLES - 1; i >= GOODPLATFORMONE; i--) { 
-		//need to start form the top not bottom
-		
-		// need to move hitbox to center
-		if ((mPosY + DOT_HEIGHT) == Obstacle[i].y){
-		if (( (mPosX+DOT_WIDTH/2) >= Obstacle[i].x) && ( (mPosX+DOT_WIDTH/2) <= Obstacle[i].x + Obstacle[i].w)) {
-			return true;
+	if (currentLevel == 1) {
+		for (int i = TOTALOBSTACLES - 1; i >= GOODPLATFORMONE; i--) {
+			//need to start form the top not bottom
 
-		}
+			// need to move hitbox to center
+			if ((mPosY + DOT_HEIGHT) == Obstacle[i].y) {
+				if (((mPosX + DOT_WIDTH / 2) >= Obstacle[i].x) && ((mPosX + DOT_WIDTH / 2) <= Obstacle[i].x + Obstacle[i].w)) {
+					return true;
+
+				}
+			}
 		}
 	}
+	if (currentLevel == 2) {
+		//insert level 2 platform collisions here
+		if ((mPosY + DOT_HEIGHT) == Obstacle[LVLTWOGOODPLATFORMTHREE].y) {
+			if (((mPosX + DOT_WIDTH / 2) >= Obstacle[LVLTWOGOODPLATFORMTHREE].x) && ((mPosX + DOT_WIDTH / 2) <= Obstacle[LVLTWOGOODPLATFORMTHREE].x + Obstacle[LVLTWOGOODPLATFORMTHREE].w)) {
+				return true;
 
+			}
+		}
+	}
 	return false;
 }
-bool Player::BadCollision() {
-	for (int i = BADPLATFORMONE;i <= FLOORTWOBADPLATFORMTWO;i++) {
-		if ((mPosY + DOT_HEIGHT) == Obstacle[i].y) {
-			if (((mPosX + DOT_WIDTH / 2) >= Obstacle[i].x) && ((mPosX + DOT_WIDTH / 2) <= Obstacle[i].x + Obstacle[i].w)) {
-				return true;
+bool Player::BadCollision(int currentLevel) {
+	if (currentLevel == 1) {
+		for (int i = BADPLATFORMONE;i <= FLOORTWOBADPLATFORMTWO;i++) {
+			if ((mPosY + DOT_HEIGHT) == Obstacle[i].y) {
+				if (((mPosX + DOT_WIDTH / 2) >= Obstacle[i].x) && ((mPosX + DOT_WIDTH / 2) <= Obstacle[i].x + Obstacle[i].w)) {
+					return true;
+				}
 			}
 		}
 	}
 	return false;
 }
 void Player::LoadAllObstacles() {
-	//first floor
-	Obstacle[GOODPLATFORMONE] = { 0,PLATFORMH_ONE,screenW / 3,PLATFORMTHICC };
-	Obstacle[BADPLATFORMONE] = { screenW / 3,PLATFORMH_ONE,screenW / 3,PLATFORMTHICC };
-	Obstacle[GOODPLATFORMTWO]= { 2*screenW / 3,PLATFORMH_ONE,screenW / 3,PLATFORMTHICC };
+	//first level
+	
+		//first floor
+		Obstacle[GOODPLATFORMONE] = { 0,PLATFORMH_ONE,screenW / 3,PLATFORMTHICC };
+		Obstacle[BADPLATFORMONE] = { screenW / 3,PLATFORMH_ONE,screenW / 3,PLATFORMTHICC };
+		Obstacle[GOODPLATFORMTWO] = { 2 * screenW / 3,PLATFORMH_ONE,screenW / 3,PLATFORMTHICC };
 
-	//second floor
-	Obstacle[FLOORTWOGOODPLATFORMONE] = { 0,PLATFORMH_TWO,screenW / 6,PLATFORMTHICC };
-	Obstacle[FLOORTWOBADPLATFORMONE] =  { Obstacle[FLOORTWOGOODPLATFORMONE].x + Obstacle[FLOORTWOGOODPLATFORMONE].w,PLATFORMH_TWO,screenW / 8,PLATFORMTHICC };
-	Obstacle[FLOORTWOGOODPLATFORMTWO] = { Obstacle[FLOORTWOBADPLATFORMONE].x + Obstacle[FLOORTWOBADPLATFORMONE].w,PLATFORMH_TWO,screenW / 3,PLATFORMTHICC };
-	Obstacle[FLOORTWOBADPLATFORMTWO] = { Obstacle[FLOORTWOGOODPLATFORMTWO].x+ Obstacle[FLOORTWOGOODPLATFORMTWO].w,PLATFORMH_TWO,Obstacle[FLOORTWOBADPLATFORMONE].w,PLATFORMTHICC };
-	Obstacle[FLOORTWOGOODPLATFORMTHREE] = { Obstacle[FLOORTWOBADPLATFORMTWO].x+ Obstacle[FLOORTWOBADPLATFORMTWO].w,PLATFORMH_TWO,screenW/6,PLATFORMTHICC };
+		//second floor
+		Obstacle[FLOORTWOGOODPLATFORMONE] = { 0,PLATFORMH_TWO,screenW / 6,PLATFORMTHICC };
+		Obstacle[FLOORTWOBADPLATFORMONE] = { Obstacle[FLOORTWOGOODPLATFORMONE].x + Obstacle[FLOORTWOGOODPLATFORMONE].w,PLATFORMH_TWO,screenW / 8,PLATFORMTHICC };
+		Obstacle[FLOORTWOGOODPLATFORMTWO] = { Obstacle[FLOORTWOBADPLATFORMONE].x + Obstacle[FLOORTWOBADPLATFORMONE].w,PLATFORMH_TWO,screenW / 3,PLATFORMTHICC };
+		Obstacle[FLOORTWOBADPLATFORMTWO] = { Obstacle[FLOORTWOGOODPLATFORMTWO].x + Obstacle[FLOORTWOGOODPLATFORMTWO].w,PLATFORMH_TWO,Obstacle[FLOORTWOBADPLATFORMONE].w,PLATFORMTHICC };
+		Obstacle[FLOORTWOGOODPLATFORMTHREE] = { Obstacle[FLOORTWOBADPLATFORMTWO].x + Obstacle[FLOORTWOBADPLATFORMTWO].w,PLATFORMH_TWO,screenW / 6,PLATFORMTHICC };
 
-	//thirdfloor
-	Obstacle[FLOORTHREEGOODPLATFORMONE] = { Obstacle[FLOORTWOBADPLATFORMONE].x + Obstacle[FLOORTWOBADPLATFORMONE].w,PLATFORMH_THREE,screenW / 3,PLATFORMTHICC };
-	Obstacle[FLOORTHREEGOODPLATFORMTWO] = { Obstacle[FLOORTWOBADPLATFORMTWO].x + Obstacle[FLOORTWOBADPLATFORMTWO].w,PLATFORMH_THREE,screenW / 4,PLATFORMTHICC };
+		//thirdfloor
+		Obstacle[FLOORTHREEGOODPLATFORMONE] = { Obstacle[FLOORTWOBADPLATFORMONE].x + Obstacle[FLOORTWOBADPLATFORMONE].w,PLATFORMH_THREE,screenW / 3,PLATFORMTHICC };
+		Obstacle[FLOORTHREEGOODPLATFORMTWO] = { Obstacle[FLOORTWOBADPLATFORMTWO].x + Obstacle[FLOORTWOBADPLATFORMTWO].w,PLATFORMH_THREE,screenW / 4,PLATFORMTHICC };
+	
+
+	//level two
+	
+		//only one floor
+		Obstacle[LVLTWOGOODPLATFORMTHREE] = { 0,screenH - 200,screenW,50 };
+	
 }
-void Player::ResetPos() {
+void Player::ResetPos(int currentLevel) {
 	//first level reset
-	mPosX = 0;
-	mPosY = screenH - 20 - DOT_HEIGHT;
+	if (currentLevel == 1) {
+		mPosX = 0;
+		mPosY = screenH - 20 - DOT_HEIGHT;
+	}
+	if (currentLevel == 2) {
+		mPosX = 0;
+		mPosY = screenH - 40 - DOT_HEIGHT;
+	}
 }
 int Player::getPlayerXPos() {
 	return mPosX;
