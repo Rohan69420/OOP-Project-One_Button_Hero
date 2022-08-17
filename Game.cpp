@@ -228,7 +228,8 @@ void Game::draw() {
 	if (CP1.reachedCheckPoint(P1.getPlayerXPos(), P1.getPlayerYPos())) {
 
 		//call transition
-		//LevelTransition();
+		LevelTransition();
+		std::cout << "Transition ready!" << std::endl;
 
 	}
 }
@@ -393,6 +394,16 @@ void Game::ClearGlobalRenderer() {
 	SDL_RenderClear(gRenderer);
 	
 	std::cout << "gRenderer cleared!" << std::endl;
+}
+
+void Game::LevelTransition() {
+	currentLevel = 2;
+	SDL_SetRenderDrawColor(gRenderer, 255, 255, 255, 255);
+	SDL_RenderClear(gRenderer);
+	AllTexture.loadFromRenderedText(gRenderer, NEWLEVEL, "Level Two",BlackColor,gfont);
+	AllTexture.render(gRenderer, NEWLEVEL, (screenW - AllTexture.getWidth(NEWLEVEL)) / 2, (screenH - AllTexture.getHeight(NEWLEVEL)) / 2);
+	SDL_RenderPresent(gRenderer);
+	SDL_Delay(5000);
 }
 
 bool gameSounds::initSounds() { 

@@ -10,6 +10,7 @@ enum TextureId {
 	WALLTEXTURE,
 	LAVA,
 	CHECKCOIN,
+	NEWLEVEL,
 	TOTALTEXTURES
 };
 enum ObstacleId {

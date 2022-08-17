@@ -46,6 +46,7 @@ public:
 	void LoadingScreen();
 	void ClearGlobalRenderer();
 	void loadWelcomeText();
+	void LevelTransition();
 private:
 	SDL_Window* window;
 	SDL_Renderer* renderer;
