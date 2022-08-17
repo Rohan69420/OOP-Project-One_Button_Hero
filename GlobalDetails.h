@@ -11,5 +11,7 @@
 
 #define STATIONARY_ANIMATION_FRAMES 8
 #define COIN_ANIMATION_FRAMES 6
+#define BOULDERHEIGHT 79
+#define BOULDERWIDTH 83
 
 const static int screenW = 1140, screenH = 600;

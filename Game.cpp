@@ -31,6 +31,7 @@ SDL_Color BlackColor = { 0,0,0 };
 
 Player P1;
 Checkpoint CP1;
+Boulder BOU;
 
 Game::Game() { //constructor
 	gamestate = GameState::PLAY;
@@ -40,6 +41,7 @@ Game::Game() { //constructor
 	//STATIONARY_ANIMATION_FRAMES = 8;
 	frame = 0;
 	coinframe = 0;
+	boulderframe = 0;
 	//SpriteClips = new SDL_Rect[STATIONARY_ANIMATION_FRAMES]; //LOOKS LIKE IT WORKED
 
 	startTime = 0;
@@ -210,6 +212,9 @@ void Game::draw() {
 		SDL_RenderClear(gRenderer);
 		AllTexture.render(gRenderer, WhichMap, 0, 0);
 		RenderAnimatedCharacter();
+		BOU.DropBoulder();
+		RenderAnimatedBoulder();
+
 		P1.RenderObstacles(gRenderer, currentLevel);
 	}
 
@@ -359,6 +364,9 @@ bool Game::loadMedia() {
 	if (!AllTexture.loadFromFile(gRenderer, LEVELTWOMAP, "lvl2map.png")) {
 		std::cout << "Failed to load level two map" << std::endl;
 	}
+	if (!AllTexture.loadFromFile(gRenderer, BOULDER, "boulder.png")) {
+		std::cout << "Failed to load boulder spritesheet" << std::endl;
+	}
 	if (!AllTexture.loadFromFile(gRenderer, FIRSTMAP, "Map1.png")) {
 		std::cout << "Failed to load the first background map image" << std::endl;
 	}
@@ -484,4 +492,17 @@ void Player::RenderObstacles(SDL_Renderer* gRenderer,int currentLevel) {
 void Checkpoint::renderCheckPoint(int coinframe,int Desti) { //keep this in playerhandler for now
 	SDL_Rect* CurrentCoinFrame = &CheckpointSprites[coinframe / 6]; //issue here ig
 	AllTexture.render(gRenderer, CHECKCOIN, ckPoint[Desti].x, ckPoint[Desti].y, CurrentCoinFrame);
+}
+
+void Boulder::renderBoulder(int boulderframe) {
+	AllTexture.render(gRenderer, BOULDER, BoulderRect.x, BoulderRect.y, &BoulderSprites[boulderframe / 8]);
+}
+void Game::RenderAnimatedBoulder() {
+	BOU.renderBoulder(boulderframe);
+	++boulderframe;
+	//Cycle animation
+	if (boulderframe / 8 >= STATIONARY_ANIMATION_FRAMES) //boulder frame = animated sheet frames
+	{
+		boulderframe = 0;
+	}
 }

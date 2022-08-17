@@ -132,6 +132,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Boulder.cpp" />
     <ClCompile Include="CheckpointHandler.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -140,6 +141,7 @@
     <ClCompile Include="TextureManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Boulder.h" />
     <ClInclude Include="ButtonHandler.h" />
     <ClInclude Include="CharacterMovement.h" />
     <ClInclude Include="Checkpoints.h" />

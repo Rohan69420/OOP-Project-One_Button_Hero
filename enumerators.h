@@ -12,6 +12,7 @@ enum TextureId {
 	CHECKCOIN,
 	NEWLEVEL,
 	LEVELTWOMAP,
+	BOULDER,
 	TOTALTEXTURES
 };
 enum ObstacleId {

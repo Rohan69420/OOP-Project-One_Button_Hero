@@ -11,7 +11,7 @@
 #include "enumerators.h"
 #include "Objects.h"
 #include "Checkpoints.h"
-
+#include "Boulder.h"
 
 
 using namespace std;
@@ -49,7 +49,7 @@ public:
 	void LevelTransition();
 	void RenderAnimatedCharacter();
 	void RenderAnimatedCheckpoint(int CheckRectNumber);
-private:
+	void RenderAnimatedBoulder();
 	SDL_Window* window;
 	SDL_Renderer* renderer;
 	SDL_Surface* screenSurface;
@@ -57,6 +57,7 @@ private:
 	TextureId WhichMap;
 	int frame;
 	int coinframe;
+	int boulderframe;
 	bool MapRunning,tickStarted;
 
 	Uint32 startTime;
