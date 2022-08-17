@@ -169,69 +169,83 @@ void Game::handleEvents() {
 	}
 }
 void Game::draw() {
-
-	//check collision before drawing
-	if (P1.BadCollision()) {
-		P1.ResetPos();
-		oofCount++;
-	}
-	// Clear screen
 	MapRunning = true;
-		SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+
+	SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
 	SDL_RenderClear(gRenderer);
 
-	//render background image i guess
-	AllTexture.render(gRenderer, WhichMap, 0, 0);
+	if (currentLevel == 1) {
+		//check collision before drawing
+		if (P1.BadCollision()) {
+			P1.ResetPos();
+			oofCount++;
+		}
+		// Clear screen
+		
+		
 
-	//Render current frame
-	SDL_Rect* currentClip = &SpriteClips[frame / 8]; //adjust framerate
-	P1.render(gRenderer,currentClip);
-	/*AllTexture.render(gRenderer,GSPRITESHEETTEXTURE,(SpriteLocationX - currentClip->w) / 2, (SpriteLocationY - currentClip->h) / 2, currentClip);*/
+		//render background image i guess
+		AllTexture.render(gRenderer, WhichMap, 0, 0);
 
-	//rendering coin
-	
-	CP1.renderCheckPoint(coinframe);
-	
+		//Render current frame
+		SDL_Rect* currentClip = &SpriteClips[frame / 8]; //adjust framerate
+		P1.render(gRenderer, currentClip);
+		/*AllTexture.render(gRenderer,GSPRITESHEETTEXTURE,(SpriteLocationX - currentClip->w) / 2, (SpriteLocationY - currentClip->h) / 2, currentClip);*/
+
+		//rendering coin
+
+		CP1.renderCheckPoint(coinframe);
+
+
+		
+
+		//render obstacles
+		P1.RenderObstacles(gRenderer);
+
+		
+
+		//Go to next frame
+		++frame;
+		++coinframe;
+
+		//Cycle animation
+		if (frame / 8 >= STATIONARY_ANIMATION_FRAMES)
+		{
+			frame = 0;
+		}
+		if (coinframe / 6 >= COIN_ANIMATION_FRAMES) {
+			coinframe = 0;
+		}
+
+		//check if checkpoint reached
+		if (CP1.reachedCheckPoint(P1.getPlayerXPos(), P1.getPlayerYPos())) {
+
+			//call transition
+			LevelTransition();
+			std::cout << "Transition ready!" << std::endl;
+
+		}
+	}
+
+	if (currentLevel == 2) {
+		SDL_SetRenderDrawColor(gRenderer, 255, 255, 255, 255);
+		SDL_RenderClear(gRenderer);
+		AllTexture.render(gRenderer, LEVELTWOMAP, 0, 0);
+	}
 
 	timeInText.str(""); // TURNS OUT THIS IS FOR CLEARING THE PAST TEXT i.e, reset
-	timeInText << "Time passed: " << (SDL_GetTicks() - startTime) /1000<<setw(5)<<" s";
-	
-	AllTexture.loadFromRenderedText(gRenderer,GTIMER, timeInText.str().c_str(), BlackColor, gfont);
-	AllTexture.render(gRenderer,GTIMER,screenW - TIMERWIDTH, 0);
+	timeInText << "Time passed: " << (SDL_GetTicks() - startTime) / 1000 << setw(5) << " s";
+
+	AllTexture.loadFromRenderedText(gRenderer, GTIMER, timeInText.str().c_str(), BlackColor, gfont);
+	AllTexture.render(gRenderer, GTIMER, screenW - TIMERWIDTH, 0);
 
 	oofInText.str(""); // TURNS OUT THIS IS FOR CLEARING THE PAST TEXT i.e, reset
-	oofInText << "Oof counter: " << oofCount<< setw(5);
+	oofInText << "Oof counter: " << oofCount << setw(5);
 
 	AllTexture.loadFromRenderedText(gRenderer, GOOFCOUNTER, oofInText.str().c_str(), BlackColor, gfont);
 	AllTexture.render(gRenderer, GOOFCOUNTER, 0, 0);
-
-	//render obstacles
-	P1.RenderObstacles(gRenderer);
-
 	//Update screen
 	SDL_RenderPresent(gRenderer);
-
-	//Go to next frame
-	++frame;
-	++coinframe;
-
-	//Cycle animation
-	if (frame / 8 >= STATIONARY_ANIMATION_FRAMES)
-	{
-		frame = 0;
-	}
-	if (coinframe / 6 >= COIN_ANIMATION_FRAMES) {
-		coinframe = 0;
-	}
-	
-	//check if checkpoint reached
-	if (CP1.reachedCheckPoint(P1.getPlayerXPos(), P1.getPlayerYPos())) {
-
-		//call transition
-		LevelTransition();
-		std::cout << "Transition ready!" << std::endl;
-
-	}
 }
 
 
@@ -337,6 +351,9 @@ bool Game::loadMedia() {
 	}
 	if (!AllTexture.loadFromFile(gRenderer, CHECKCOIN, "checkcoin1.png")) {
 		std::cout << "Failed to load the coin sprite" << std::endl;
+	}
+	if (!AllTexture.loadFromFile(gRenderer, LEVELTWOMAP, "lvl2map.png")) {
+		std::cout << "Failed to load level two map" << std::endl;
 	}
 	if (!AllTexture.loadFromFile(gRenderer, FIRSTMAP, "Map1.png")) {
 		std::cout << "Failed to load the first background map image" << std::endl;

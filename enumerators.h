@@ -11,6 +11,7 @@ enum TextureId {
 	LAVA,
 	CHECKCOIN,
 	NEWLEVEL,
+	LEVELTWOMAP,
 	TOTALTEXTURES
 };
 enum ObstacleId {

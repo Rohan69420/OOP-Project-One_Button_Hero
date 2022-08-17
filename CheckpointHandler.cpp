@@ -5,7 +5,9 @@ Checkpoint::Checkpoint() { //might need to friend playerhandler?
 }
 bool Checkpoint::reachedCheckPoint(int PlayerX, int PlayerY) {//need a level dependent parameter
 	if (PlayerX >= ckPoint[CHECKPOINTONE].x && PlayerX <= ckPoint[CHECKPOINTONE].x + ckPoint[CHECKPOINTONE].w) {
-		return true;
+		if (PlayerY >= ckPoint[CHECKPOINTONE].y && PlayerY <= ckPoint[CHECKPOINTONE].y+ckPoint[CHECKPOINTONE].h) {
+			return true;
+		}
 	}
 		return false;
 }
