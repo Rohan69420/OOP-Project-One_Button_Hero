@@ -50,6 +50,7 @@ public:
 	void RenderAnimatedCharacter();
 	void RenderAnimatedCheckpoint(int CheckRectNumber);
 	void RenderAnimatedBoulder();
+	void GameOver();
 	SDL_Window* window;
 	SDL_Renderer* renderer;
 	SDL_Surface* screenSurface;
@@ -70,6 +71,7 @@ public:
 	int oofCount,boulderNumber;
 	int currentLevel,lives;
 	bool firstCollision;
+	bool Started;
 };
 
 // Might not need this \|/

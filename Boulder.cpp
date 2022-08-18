@@ -1,19 +1,23 @@
 #pragma once
 #include "Boulder.h"
 
+
 Boulder::Boulder() {
 	srand((unsigned)time(NULL));
 	BoulderRect.x = rand() % (screenW-BOULDERWIDTH);
 	BoulderRect.y = -BOULDERHEIGHT;
+	BoulderRect.w = BOULDERWIDTH;
+	BoulderRect.h = BOULDERHEIGHT;
 	loadBoulderSprites();
 }
 bool Boulder::BoulderCollision(int PlayerX, int PlayerY) {
 	//accuracy can be enhanced, just working prototype for now
 	
-	if (PlayerY >= BoulderRect.y && PlayerY <= BoulderRect.y + BoulderRect.h) { //THIS PAINFUL
-		std::cout << "Y collided" << std::endl;
-		if ((PlayerX >= BoulderRect.x) && (PlayerX <= BoulderRect.x + BoulderRect.w)) {
-			std::cout << "Total collision" << std::endl;
+	if (PlayerY+SPRITEH/2 >= BoulderRect.y && PlayerY+SPRITEH/2 <= BoulderRect.y + BoulderRect.h) { //THIS PAINFUL
+		//std::cout << "Y collided" << std::endl;
+	//std::cout << BoulderRect.x << "-" << BoulderRect.x+BoulderRect.w << " " << PlayerX << std::endl;
+		if ((PlayerX+SPRITEW/2 >= BoulderRect.x) && (PlayerX+SPRITEW/2 <= BoulderRect.x + BoulderRect.w)) {
+		//	std::cout << "Total collision" << std::endl;
 			return true;
 		}
 	}

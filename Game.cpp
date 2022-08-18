@@ -53,6 +53,8 @@ Game::Game() { //constructor
 	boulderNumber = 0;
 	lives = 3;
 	firstCollision = true;
+	MapRunning = true;
+	Started = false;
 }
 Game::~Game() { //destructor
 	SDL_DestroyWindow(window);
@@ -113,7 +115,7 @@ void Game::gameLoop() {
 	while (gamestate != GameState::EXIT) {
 		handleEvents();
 		//P1.move(); //what if move is shifted inside handle events?
-		if (MapRunning) {
+		if (MapRunning && Started) {
 			if (!tickStarted) {
 				startTime = SDL_GetTicks();
 				tickStarted = true;
@@ -124,7 +126,9 @@ void Game::gameLoop() {
 }
 void Game::handleEvents() {
 	SDL_Event evnt;
-	P1.positiveGravity(currentLevel);
+	if (MapRunning == true) {
+		P1.positiveGravity(currentLevel);
+	}
 
 	while (SDL_PollEvent(&evnt)) {
 		switch (evnt.type) {
@@ -157,16 +161,20 @@ void Game::handleEvents() {
 				}
 			}
 			else {
-				P1.handleEvent(evnt);
-				P1.move(currentLevel);
-				draw();
+				if (MapRunning == true) {
+					P1.handleEvent(evnt);
+					P1.move(currentLevel);
+					draw();
+				}
 			}
 			break;
 
 			case SDL_KEYUP:
-				P1.handleEvent(evnt);
-				P1.move(currentLevel);
-				draw();
+				if (MapRunning == true) {
+					P1.handleEvent(evnt);
+					P1.move(currentLevel);
+					draw();
+				}
 			break;
 
 		//removed the resizable part altogether
@@ -176,7 +184,7 @@ void Game::handleEvents() {
 }
 void Game::draw() {
 	MapRunning = true;
-
+	Started = true;
 	SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
 	SDL_RenderClear(gRenderer);
 
@@ -216,11 +224,7 @@ void Game::draw() {
 	}
 
 	if (currentLevel == 2) { //level two condition
-		SDL_SetRenderDrawColor(gRenderer, 255, 255, 255, 255);
-		SDL_RenderClear(gRenderer);
-		AllTexture.render(gRenderer, WhichMap, 0, 0);
-		RenderAnimatedCharacter();
-		RenderAnimatedBoulder();
+		
 
 		//test collision and increment
 		if (!BOU.DropBoulder()) {
@@ -232,6 +236,12 @@ void Game::draw() {
 			--lives;
 			firstCollision = false;
 		}
+
+		SDL_SetRenderDrawColor(gRenderer, 255, 255, 255, 255);
+		SDL_RenderClear(gRenderer);
+		AllTexture.render(gRenderer, WhichMap, 0, 0);
+		RenderAnimatedCharacter();
+		RenderAnimatedBoulder();
 
 		P1.RenderObstacles(gRenderer, currentLevel);
 
@@ -249,6 +259,12 @@ void Game::draw() {
 		AllTexture.loadFromRenderedText(gRenderer, LIVES, liveCounter.str().c_str(), WhiteColor, gfont);
 		AllTexture.render(gRenderer, LIVES, screenW-AllTexture.getWidth(LIVES), screenH - AllTexture.getHeight(LIVES) - 20);
 		
+		//render collision frame and pause for two seconds before deeming game over
+		if (lives == 0) {
+			SDL_Delay(2000);
+			MapRunning = false; 
+			GameOver();
+		}
 	}
 
 	timeInText.str(""); // TURNS OUT THIS IS FOR CLEARING THE PAST TEXT i.e, reset
@@ -465,6 +481,14 @@ void Game::LevelTransition() {
 	SDL_RenderPresent(gRenderer);
 	SDL_Delay(5000);
 }
+void Game::GameOver() {
+	SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, 255);
+	SDL_RenderClear(gRenderer);
+	AllTexture.loadFromRenderedText(gRenderer, GAMEOVERTEXT, "Game Over", WhiteColor, gfont);
+	AllTexture.render(gRenderer, GAMEOVERTEXT, (screenW - AllTexture.getWidth(GAMEOVERTEXT)) / 2, (screenH - AllTexture.getHeight(GAMEOVERTEXT)) / 2);
+	SDL_RenderPresent(gRenderer);
+}
+
 
 bool gameSounds::initSounds() { 
 	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) { //chunksize option here

@@ -15,6 +15,7 @@ enum TextureId {
 	BOULDER,
 	BOULDERCOUNTER,
 	LIVES,
+	GAMEOVERTEXT,
 	TOTALTEXTURES
 };
 enum ObstacleId {
