@@ -32,9 +32,10 @@ SDL_Color BlackColor = { 0,0,0 },WhiteColor={0xFF,0xFF,0xFF};
 Player P1;
 Checkpoint CP1;
 Boulder BOU;
+MainMenu MM;
 
 Game::Game() { //constructor
-	gamestate = GameState::PLAY;
+	gamestate = PLAY;
 	gMusic = NULL;
 	//gfont = NULL;
 	WhichMap = FIRSTMAP;
@@ -55,6 +56,8 @@ Game::Game() { //constructor
 	firstCollision = true;
 	MapRunning = true;
 	Started = false;
+	onMenu = true;
+	insideMenu = false;
 }
 Game::~Game() { //destructor
 	SDL_DestroyWindow(window);
@@ -112,17 +115,22 @@ void Game::init(const char *title, int x, int y, int w, int h, Uint32 flags) {
 }
 void Game::gameLoop() {
 	//draw();
-	while (gamestate != GameState::EXIT) {
-		handleEvents();
-		//P1.move(); //what if move is shifted inside handle events?
-		if (MapRunning && Started) {
-			if (!tickStarted) {
-				startTime = SDL_GetTicks();
-				tickStarted = true;
+	
+		while (gamestate != EXIT) {
+			handleEvents();
+			//P1.move(); //what if move is shifted inside handle events?
+			//onmenu locked
+			if (!onMenu) {
+				if (MapRunning && Started) {
+					if (!tickStarted) {
+						startTime = SDL_GetTicks();
+						tickStarted = true;
+					}
+					draw();
+				}
 			}
-			draw();
 		}
-	}
+	
 }
 void Game::handleEvents() {
 	SDL_Event evnt;
@@ -131,11 +139,11 @@ void Game::handleEvents() {
 	}
 
 	while (SDL_PollEvent(&evnt)) {
+		//global exit handler, cause it should run regardless of game condition
 		switch (evnt.type) {
 		case SDL_QUIT:
-			gamestate = GameState::EXIT;
+			gamestate = EXIT;
 			break;
-
 		case SDL_KEYDOWN:
 			if (evnt.key.keysym.sym == SDLK_0) { //need the pause option for my ears
 				if (Mix_PlayingMusic() == 0)
@@ -160,14 +168,19 @@ void Game::handleEvents() {
 					}
 				}
 			}
-			else {
-				if (MapRunning == true) {
-					P1.handleEvent(evnt);
-					P1.move(currentLevel);
-					draw();
-				}
-			}
 			break;
+		}
+
+		if (!onMenu) {
+			switch (evnt.type) {
+			case SDL_KEYDOWN:
+				
+					if (MapRunning == true) {
+						P1.handleEvent(evnt);
+						P1.move(currentLevel);
+						draw();
+					}
+				break;
 
 			case SDL_KEYUP:
 				if (MapRunning == true) {
@@ -175,10 +188,31 @@ void Game::handleEvents() {
 					P1.move(currentLevel);
 					draw();
 				}
-			break;
+				break;
 
-		//removed the resizable part altogether
-			
+				//removed the resizable part altogether
+
+			}
+		}
+		if (onMenu) {
+			if (evnt.type == SDL_KEYDOWN ) {
+				insideMenu = true;
+			}
+			if (insideMenu) {
+				MM.HandleMenuEvent(evnt);
+			}
+			switch(MM.MenuAction()){
+			case 1:
+				onMenu = false;
+				insideMenu = false;
+				draw();
+				break;
+			case 2:
+				break;
+			case 3:
+				gamestate = EXIT;
+				break;
+			}
 		}
 	}
 }
@@ -412,6 +446,9 @@ bool Game::loadMedia() {
 	if (!AllTexture.loadFromFile(gRenderer, BOULDER, "boulder.png")) {
 		std::cout << "Failed to load boulder spritesheet" << std::endl;
 	}
+	if (!AllTexture.loadFromFile(gRenderer, MAINMENUANIM, "Menu.png")) {
+		std::cout << "Failed to load the main menu animated texture" << std::endl;
+	}
 	if (!AllTexture.loadFromFile(gRenderer, FIRSTMAP, "Map1.png")) {
 		std::cout << "Failed to load the first background map image" << std::endl;
 	}
@@ -558,4 +595,9 @@ void Game::RenderAnimatedBoulder() {
 	{
 		boulderframe = 0;
 	}
+}
+
+void MainMenu::RenderMenu() {
+	AllTexture.render(gRenderer, MAINMENUANIM, 0, 0, &rectSrc);
+	SDL_RenderPresent(gRenderer);
 }

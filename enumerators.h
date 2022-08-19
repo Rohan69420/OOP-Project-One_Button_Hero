@@ -1,4 +1,9 @@
 #pragma once
+enum GameState {
+	PLAY,
+	EXIT
+};
+
 enum TextureId {
 	GSPRITESHEETTEXTURE,
 	FIRSTMAP,
@@ -16,6 +21,7 @@ enum TextureId {
 	BOULDERCOUNTER,
 	LIVES,
 	GAMEOVERTEXT,
+	MAINMENUANIM,
 	TOTALTEXTURES
 };
 enum ObstacleId {

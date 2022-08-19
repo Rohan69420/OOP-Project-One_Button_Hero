@@ -12,6 +12,7 @@
 #include "Objects.h"
 #include "Checkpoints.h"
 #include "Boulder.h"
+#include "Mainmenu.h"
 
 
 using namespace std;
@@ -23,10 +24,6 @@ using namespace std;
 //global non class enum for whichmap
 
 
-enum class GameState {
-	PLAY,
-	EXIT
-};
 
 enum class RectangleId {
 	BACKGROUND_RECT,
@@ -72,6 +69,7 @@ public:
 	int currentLevel,lives;
 	bool firstCollision;
 	bool Started;
+	bool onMenu,insideMenu;
 };
 
 // Might not need this \|/

@@ -136,6 +136,7 @@
     <ClCompile Include="CheckpointHandler.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Mainmenu.cpp" />
     <ClCompile Include="Objects.cpp" />
     <ClCompile Include="PlayerHandler.cpp" />
     <ClCompile Include="TextureManager.cpp" />
@@ -150,6 +151,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="includes.h" />
+    <ClInclude Include="Mainmenu.h" />
     <ClInclude Include="Objects.h" />
     <ClInclude Include="SoundManager.h" />
     <ClInclude Include="TextureManager.h" />
