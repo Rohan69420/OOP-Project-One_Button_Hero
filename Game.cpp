@@ -81,6 +81,7 @@ void Game::reset() {
 	Started = false;
 	onMenu = true;
 	insideMenu = false;
+	continuestate = 0;
 }
 Game::~Game() { //destructor
 	SDL_DestroyWindow(window);
@@ -222,11 +223,11 @@ void Game::handleEvents() {
 				insideMenu = true;
 			}
 			if (insideMenu) {
-				MM.HandleMenuEvent(evnt);
+				continuestate=MM.HandleMenuEvent(evnt,unlockedLevel);
 			}
 			switch(MM.MenuAction()){
 			case 1:
-				onMenu = false;
+				onMenu = false; //these setting to go to levels
 				insideMenu = false;
 				unlockedLevel = 1;
 				draw();
@@ -234,7 +235,26 @@ void Game::handleEvents() {
 			case 2:
 				//progressbar
 				MM.unlockedLevels(unlockedLevel,evnt);
-
+				if (continuestate == 1) {
+					onMenu = false; //basically copied from first case
+					insideMenu = false;
+					draw();
+				}
+				else if (continuestate == 2) {
+					onMenu = false; //basically copied from first case
+					insideMenu = false;
+					currentLevel = 2; //pray this workey;
+					P1.ResetPos(currentLevel);
+					draw();
+				}
+				else if(continuestate==3){
+					onMenu = false; //basically copied from first case
+					insideMenu = false;
+					currentLevel = 2; //pray this workey;
+					P1.ResetPos(currentLevel);
+					draw();
+					//plus unlock the left right keys boolean here
+				}
 				break;
 			case 3:
 				gamestate = EXIT;

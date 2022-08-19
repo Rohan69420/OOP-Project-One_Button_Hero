@@ -12,12 +12,13 @@ private:
 public:
     MainMenu();
     void loadMenuSprites();
-    void HandleMenuEvent(SDL_Event &e);
+    int HandleMenuEvent(SDL_Event &e,int unlockedLevel);
     void RenderMenu();
     void unlockedLevels(int unlockedLevel,SDL_Event &evnt);
     int MenuAction();
     void reset();
     void renderUnlockedLevel();
-    void handleUnlockedLevels(SDL_Event &e);
+    int handleUnlockedLevels(SDL_Event &e,int unlockedLevel);
     void showHighScores();
+    void changeLevelAndRun();
 };

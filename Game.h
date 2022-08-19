@@ -71,6 +71,7 @@ public:
 	bool firstCollision;
 	bool Started;
 	bool onMenu,insideMenu;
+	int continuestate;
 };
 
 // Might not need this \|/

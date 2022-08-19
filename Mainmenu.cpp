@@ -40,7 +40,7 @@ void MainMenu::loadMenuSprites(){
     MenuSprites[3].h = screenH;
 
 }
-void MainMenu::HandleMenuEvent(SDL_Event& e) {
+int MainMenu::HandleMenuEvent(SDL_Event& e,int unlockedLevel) {
     if(!inProgress){
     if (e.type == SDL_MOUSEMOTION) //mouse click eent handler
 
@@ -80,9 +80,10 @@ void MainMenu::HandleMenuEvent(SDL_Event& e) {
          }
      }
          RenderMenu();
+         return 0;
      }
     else {
-        handleUnlockedLevels(e);
+       return handleUnlockedLevels(e,unlockedLevel);
     }
 }
 int MainMenu::MenuAction() {
@@ -104,28 +105,31 @@ void MainMenu::unlockedLevels(int progress,SDL_Event &evnt) {
     renderUnlockedLevel();
    // handleUnlockedLevels(evnt);
 }
-void MainMenu::handleUnlockedLevels(SDL_Event &ev) {
+int MainMenu::handleUnlockedLevels(SDL_Event &ev,int unlockedLevel) {
     if (ev.type == SDL_MOUSEBUTTONDOWN)
             {
-            if (ev.button.x > 548 && ev.button.x < 790 && ev.button.y>511 && ev.button.y < 579)
-            {
-                //switch (unlockedLevel)
-                //{
-                //case 0: //no states saved
-                //    //load new game
-                //    isRunning = false;
-                //    break;
-                //case 1: //reached level 2, progress will be changed to 1
-                //    //load level2()
-                //    isRunning = false;
-                //    break;
-                //case 2: // completed level2, progress value should be changed to 2
-                //    isRunning = false;
-                //    //load level3()
-                //    break;
-                }
-           
+        if (ev.button.x > 548 && ev.button.x < 790 && ev.button.y>511 && ev.button.y < 579)
+        {
+            //continue
 
+            switch (unlockedLevel)
+            {
+            case 1: //no states saved
+                //load new game
+                return 1;
+                //lets dry run
+                break;
+            case 2: //reached level 2, progress will be changed to 1
+                //load level2()
+                return 2;
+                break;
+            case 3: // completed level2, progress value should be changed to 2
+                return 3;
+                //load level3()
+                break;
+            }
+
+        }
             else if (ev.button.x > 812 && ev.button.x < 1090 && ev.button.y>511 && ev.button.y < 579)
             {
                 //HighScores();
