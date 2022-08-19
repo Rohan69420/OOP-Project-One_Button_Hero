@@ -67,7 +67,7 @@ public:
 	SDL_Rect ProgressBarOuter, ProgressBarInner;
 	SDL_Rect SpriteClips[STATIONARY_ANIMATION_FRAMES];
 	int oofCount,boulderNumber;
-	int currentLevel,lives;
+	int currentLevel,lives,unlockedLevel;
 	bool firstCollision;
 	bool Started;
 	bool onMenu,insideMenu;

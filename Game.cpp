@@ -39,6 +39,7 @@ Game::Game() { //constructor
 	gMusic = NULL;
 	//gfont = NULL;
 	launchedLoadingScreen = false;
+	unlockedLevel = 1;
 	reset();
 	//WhichMap = FIRSTMAP;
 	////STATIONARY_ANIMATION_FRAMES = 8;
@@ -227,9 +228,13 @@ void Game::handleEvents() {
 			case 1:
 				onMenu = false;
 				insideMenu = false;
+				unlockedLevel = 1;
 				draw();
 				break;
 			case 2:
+				//progressbar
+				MM.unlockedLevels(unlockedLevel,evnt);
+
 				break;
 			case 3:
 				gamestate = EXIT;
@@ -245,7 +250,7 @@ void Game::draw() {
 	SDL_RenderClear(gRenderer);
 
 	if (currentLevel == 1) { //level one condition
-
+		
 		//check collision before drawing
 		if (P1.BadCollision(currentLevel)) {
 			P1.ResetPos(currentLevel);
@@ -323,6 +328,9 @@ void Game::draw() {
 			SDL_Delay(2000);
 			MapRunning = false; 
 			GameOver();
+		}
+		if (boulderNumber == 36) {
+			unlockedLevel = 3;
 		}
 	}
 
@@ -474,6 +482,9 @@ bool Game::loadMedia() {
 	if (!AllTexture.loadFromFile(gRenderer, MAINMENUANIM, "Menu.png")) {
 		std::cout << "Failed to load the main menu animated texture" << std::endl;
 	}
+	if (!AllTexture.loadFromFile(gRenderer, LEVELUNLOCKED, "progress.png")) {
+		std::cout<<"Failed to load the level unlockedscreen"<<std::endl;
+	}
 	if (!AllTexture.loadFromFile(gRenderer, FIRSTMAP, "Map1.png")) {
 		std::cout << "Failed to load the first background map image" << std::endl;
 	}
@@ -534,6 +545,7 @@ void Game::ClearGlobalRenderer() {
 
 void Game::LevelTransition() {
 	currentLevel = 2;
+	unlockedLevel = currentLevel;
 	WhichMap = LEVELTWOMAP;
 	P1.ResetPos(currentLevel);
 	SDL_SetRenderDrawColor(gRenderer, 255, 255, 255, 255);
@@ -632,4 +644,16 @@ void Game::RenderAnimatedBoulder() {
 void MainMenu::RenderMenu() {
 	AllTexture.render(gRenderer, MAINMENUANIM, 0, 0, &rectSrc);
 	SDL_RenderPresent(gRenderer);
+}
+void MainMenu::renderUnlockedLevel(){
+	AllTexture.render(gRenderer, LEVELUNLOCKED, 0, 0, &unlockedSrc);
+	SDL_RenderPresent(gRenderer);
+	}
+void MainMenu::showHighScores() {
+	SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, 255);
+	SDL_RenderClear(gRenderer);
+	AllTexture.loadFromRenderedText(gRenderer, HIGHSCORE, "HIGHSCORE:", WhiteColor, gfont);
+	AllTexture.render(gRenderer, HIGHSCORE, 0, 0);
+	SDL_RenderPresent(gRenderer);
+	SDL_Delay(7000); //freeze this bih for 7 seconds instead of having to deal with bools
 }

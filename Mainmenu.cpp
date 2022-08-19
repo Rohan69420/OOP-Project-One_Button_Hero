@@ -10,7 +10,12 @@ void MainMenu::reset() {
     rectSrc.x = rectSrc.y = 0;
     rectSrc.w = 1140;
     rectSrc.h = 600;
+
+    unlockedSrc.x = unlockedSrc.y = 0; //this needed
+    unlockedSrc.w = 1140;
+    unlockedSrc.h = 600;
     exit = false;
+    inProgress = false;
     state = 0;
 }
 void MainMenu::loadMenuSprites(){
@@ -36,7 +41,8 @@ void MainMenu::loadMenuSprites(){
 
 }
 void MainMenu::HandleMenuEvent(SDL_Event& e) {
-     if (e.type == SDL_MOUSEMOTION) //mouse click eent handler
+    if(!inProgress){
+    if (e.type == SDL_MOUSEMOTION) //mouse click eent handler
 
             {
             if (e.button.x > 384 && e.button.x < 756 && e.button.y>110 && e.button.y < 217)
@@ -65,12 +71,68 @@ void MainMenu::HandleMenuEvent(SDL_Event& e) {
          if (rectSrc.x == 1140 && rectSrc.y == 600) {
              state = 3;
          }
+         if (rectSrc.x == 0 && rectSrc.y == 600) {
+             inProgress = true;
+             state = 2;
+         }
          if (rectSrc.x == 1140 && rectSrc.y == 0) {
              state = 1;
          }
      }
-     RenderMenu();
+         RenderMenu();
+     }
+    else {
+        handleUnlockedLevels(e);
+    }
 }
 int MainMenu::MenuAction() {
     return state;
+}
+void MainMenu::unlockedLevels(int progress,SDL_Event &evnt) {
+    switch (progress)
+    {
+    case 1: //no states saved
+        unlockedSrc.x = 0; unlockedSrc.y = 0;
+        break;
+    case 2: //reached level 2, progress will be changed to 1
+        unlockedSrc.x = 0; unlockedSrc.y = 600;
+        break;
+    case 3: // completed level2, progress value should be changed to 2
+        unlockedSrc.x = 0; unlockedSrc.y = 1200;
+        break;
+    }
+    renderUnlockedLevel();
+   // handleUnlockedLevels(evnt);
+}
+void MainMenu::handleUnlockedLevels(SDL_Event &ev) {
+    if (ev.type == SDL_MOUSEBUTTONDOWN)
+            {
+            if (ev.button.x > 548 && ev.button.x < 790 && ev.button.y>511 && ev.button.y < 579)
+            {
+                //switch (unlockedLevel)
+                //{
+                //case 0: //no states saved
+                //    //load new game
+                //    isRunning = false;
+                //    break;
+                //case 1: //reached level 2, progress will be changed to 1
+                //    //load level2()
+                //    isRunning = false;
+                //    break;
+                //case 2: // completed level2, progress value should be changed to 2
+                //    isRunning = false;
+                //    //load level3()
+                //    break;
+                }
+           
+
+            else if (ev.button.x > 812 && ev.button.x < 1090 && ev.button.y>511 && ev.button.y < 579)
+            {
+                //HighScores();
+        //std::cout << "Highscores" << std::endl;
+                showHighScores();
+                //isRunning = false;
+            }
+
+            }
 }
