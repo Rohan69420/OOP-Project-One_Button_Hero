@@ -561,7 +561,7 @@ void Game::GameOver() {
 	AllTexture.loadFromRenderedText(gRenderer, GAMEOVERTEXT, "Game Over", WhiteColor, gfont);
 	AllTexture.render(gRenderer, GAMEOVERTEXT, (screenW - AllTexture.getWidth(GAMEOVERTEXT)) / 2, (screenH - AllTexture.getHeight(GAMEOVERTEXT)) / 2);
 	SDL_RenderPresent(gRenderer);
-	
+	SDL_Delay(5000);
 	//master reset
 	P1.reset();
 	BOU.reset();
