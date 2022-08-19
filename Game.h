@@ -48,6 +48,7 @@ public:
 	void RenderAnimatedCheckpoint(int CheckRectNumber);
 	void RenderAnimatedBoulder();
 	void GameOver();
+	void reset();
 	SDL_Window* window;
 	SDL_Renderer* renderer;
 	SDL_Surface* screenSurface;

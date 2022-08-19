@@ -44,6 +44,8 @@ public:
 	
 	int getPlayerYPos();
 
+	void reset();
+
 private:
 	//The X and Y offsets of the dot
 	int mPosX, mPosY;					//<<<	<	<	<	<	< -	-	-	-	-

@@ -38,6 +38,30 @@ Game::Game() { //constructor
 	gamestate = PLAY;
 	gMusic = NULL;
 	//gfont = NULL;
+	launchedLoadingScreen = false;
+	reset();
+	//WhichMap = FIRSTMAP;
+	////STATIONARY_ANIMATION_FRAMES = 8;
+	//frame = 0;
+	//coinframe = 0;
+	//boulderframe = 0;
+	////SpriteClips = new SDL_Rect[STATIONARY_ANIMATION_FRAMES]; //LOOKS LIKE IT WORKED
+
+	//startTime = 0;
+	//tickStarted = false;
+
+	//
+	//oofCount = 0;
+	//currentLevel = 1;
+	//boulderNumber = 0;
+	//lives = 3;
+	//firstCollision = true;
+	//MapRunning = true;
+	//Started = false;
+	//onMenu = true;
+	//insideMenu = false;
+}
+void Game::reset() {
 	WhichMap = FIRSTMAP;
 	//STATIONARY_ANIMATION_FRAMES = 8;
 	frame = 0;
@@ -47,8 +71,6 @@ Game::Game() { //constructor
 
 	startTime = 0;
 	tickStarted = false;
-
-	launchedLoadingScreen = false;
 	oofCount = 0;
 	currentLevel = 1;
 	boulderNumber = 0;
@@ -255,6 +277,9 @@ void Game::draw() {
 			std::cout << "Transition ready!" << std::endl;
 
 		}
+		if (oofCount == 10) {
+			GameOver();
+		}
 	}
 
 	if (currentLevel == 2) { //level two condition
@@ -339,7 +364,7 @@ void Game::RenderAnimatedCharacter() {
 
 void Game::loadWelcomeText() {
 	
-
+	SDL_RenderClear(gRenderer);//clear
 	//sorted that we dont need to resize and can use point size instead
 	AllTexture.render(gRenderer,WELCOMEOBH,(screenW-AllTexture.getWidth(WELCOMEOBH))/2, (screenH-AllTexture.getHeight(WELCOMEOBH)) / 2);  //default argument enabled
 	//positioned such as the welcome text is rendered below the press to start
@@ -524,6 +549,13 @@ void Game::GameOver() {
 	AllTexture.loadFromRenderedText(gRenderer, GAMEOVERTEXT, "Game Over", WhiteColor, gfont);
 	AllTexture.render(gRenderer, GAMEOVERTEXT, (screenW - AllTexture.getWidth(GAMEOVERTEXT)) / 2, (screenH - AllTexture.getHeight(GAMEOVERTEXT)) / 2);
 	SDL_RenderPresent(gRenderer);
+	
+	//master reset
+	P1.reset();
+	BOU.reset();
+	MM.reset();
+	reset();
+	loadWelcomeText();
 }
 
 

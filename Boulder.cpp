@@ -3,11 +3,7 @@
 
 
 Boulder::Boulder() {
-	srand((unsigned)time(NULL));
-	BoulderRect.x = rand() % (screenW-BOULDERWIDTH);
-	BoulderRect.y = -BOULDERHEIGHT;
-	BoulderRect.w = BOULDERWIDTH;
-	BoulderRect.h = BOULDERHEIGHT;
+	reset();
 	loadBoulderSprites();
 }
 bool Boulder::BoulderCollision(int PlayerX, int PlayerY) {
@@ -79,4 +75,11 @@ void Boulder::loadBoulderSprites() {
 	BoulderSprites[7].w = BOULDERWIDTH;
 	BoulderSprites[7].h = BOULDERHEIGHT;
 
+}
+void Boulder::reset() {
+	srand((unsigned)time(NULL));
+	BoulderRect.x = rand() % (screenW - BOULDERWIDTH);
+	BoulderRect.y = -BOULDERHEIGHT;
+	BoulderRect.w = BOULDERWIDTH;
+	BoulderRect.h = BOULDERHEIGHT;
 }

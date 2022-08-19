@@ -14,4 +14,5 @@ public:
 	void SpawnNewBoulder();
 	bool DropBoulder();
 	void loadBoulderSprites();
+	void reset();
 };

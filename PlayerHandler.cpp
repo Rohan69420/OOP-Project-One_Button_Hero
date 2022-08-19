@@ -9,8 +9,14 @@
 #endif
 
 Player::Player() { //need to overload for different levels ig, position wise 
+	reset();
+	LoadAllObstacles();
+	
+	
+}
+void Player::reset() {
 	mPosX = 0;
-	mPosY = screenH-20-DOT_HEIGHT;
+	mPosY = screenH - 20 - DOT_HEIGHT;
 	mVelX = 0;
 	mVelY = 0;
 
@@ -18,8 +24,8 @@ Player::Player() { //need to overload for different levels ig, position wise
 	FlipVal = SDL_FLIP_NONE;
 	DF = RIGHT; //persisting issue that it gets reset to this variable once scope ends but we dont need to tackle this issue in our original plan
 
-	LoadAllObstacles();
-	
+	//LoadAllObstacles();
+
 	//jump counter capped to 3 i.e, three jumps maximum allowed 
 	jumpCounter = 3;
 }

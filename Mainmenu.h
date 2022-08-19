@@ -17,4 +17,5 @@ public:
     void RenderMenu();
     bool exitCalled();
     int MenuAction();
+    void reset();
 };

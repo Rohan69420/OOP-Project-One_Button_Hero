@@ -1,5 +1,9 @@
 #include "Mainmenu.h"
 MainMenu::MainMenu(){
+    reset();
+	loadMenuSprites();
+}
+void MainMenu::reset() {
     rectDes.x = rectDes.y = 0;
     rectDes.w = 1140;
     rectDes.h = 600;
@@ -8,7 +12,6 @@ MainMenu::MainMenu(){
     rectSrc.h = 600;
     exit = false;
     state = 0;
-	loadMenuSprites();
 }
 void MainMenu::loadMenuSprites(){
     MenuSprites[0].x = 0;
