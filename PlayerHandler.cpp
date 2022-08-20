@@ -32,70 +32,77 @@ void Player::reset() {
 	//LoadAllObstacles();
 
 	//jump counter capped to 3 i.e, three jumps maximum allowed 
-	jumpCounter = 3;
+	jumpCounter = 0;
 }
 void Player::handleEvent(SDL_Event& e) {
-	if (e.type == SDL_KEYDOWN && e.key.repeat == 0)		///<<<<<<<<	-	-	- need key repeat because only one press is enuff
-	{									////////<<<< meaning that even if you are holding key it will still by 10fps vel
-		switch (e.key.keysym.sym)
-		{
-		case SDLK_UP: mVelY -= JUMPDIST; 
-			if (LRlock) {
-				if (left) {
-					left = false;
-					
+	
+		if (e.type == SDL_KEYDOWN && e.key.repeat == 0)		///<<<<<<<<	-	-	- need key repeat because only one press is enuff
+		{									////////<<<< meaning that even if you are holding key it will still by 10fps vel
+			switch (e.key.keysym.sym)
+			{
+			case SDLK_UP: 
+				if (jumpCounter <= 4) { //do nothing if jump counter exceeds
+					mVelY -= JUMPDIST;
+					++jumpCounter;	//increment jump counter
+				}
+				if (LRlock) {
+					if (left) {
+						left = false;
+
+					}
+					else {
+						left = true;
+
+					}
+					alreadyTriggered = false; //reset
+				}
+				break;
+				//case SDLK_DOWN: mVelY += DOT_VEL; break;
+
+				if (!LRlock) {
+			case SDLK_LEFT: mVelX -= DOT_VEL;
+				if (DF == RIGHT) {
+					DF = LEFT;
+					FlipVal = SDL_FLIP_HORIZONTAL;
 				}
 				else {
-					left = true;
-					
+					FlipVal = SDL_FLIP_NONE;
 				}
-				alreadyTriggered = false; //reset
-			}
-			break;
-		//case SDLK_DOWN: mVelY += DOT_VEL; break;
+				break;
 
-			if (!LRlock) {
-		case SDLK_LEFT: mVelX -= DOT_VEL;
-			if (DF == RIGHT) {
-				DF = LEFT;
-				FlipVal = SDL_FLIP_HORIZONTAL;
-			}
-			else {
-				FlipVal = SDL_FLIP_NONE;
-			}
-			break;
-
-		case SDLK_RIGHT: mVelX += DOT_VEL;
-			if (DF == LEFT) {
-				DF = RIGHT;
-				FlipVal = SDL_FLIP_HORIZONTAL;
-			}
-			else {
-				FlipVal = SDL_FLIP_NONE;
-			}
-			break;
+			case SDLK_RIGHT: mVelX += DOT_VEL;
+				if (DF == LEFT) {
+					DF = RIGHT;
+					FlipVal = SDL_FLIP_HORIZONTAL;
+				}
+				else {
+					FlipVal = SDL_FLIP_NONE;
+				}
+				break;
+				}
 			}
 		}
-	}
-	//Release
-	else if (e.type == SDL_KEYUP && e.key.repeat == 0)		//<<<<<<<<< reverse velocity?
-	{
-		switch (e.key.keysym.sym)
+		//Release
+		else if (e.type == SDL_KEYUP && e.key.repeat == 0)		//<<<<<<<<< reverse velocity?
 		{
-		case SDLK_UP: mVelY += JUMPDIST;  break;
-		//case SDLK_DOWN: mVelY -= DOT_VEL; break;
-			if (!LRlock) {
-		case SDLK_LEFT: mVelX += DOT_VEL; break;
-		case SDLK_RIGHT: mVelX -= DOT_VEL; break;
+			switch (e.key.keysym.sym)
+			{
+			//case SDLK_UP: mVelY += JUMPDIST;  break;
+				//case SDLK_DOWN: mVelY -= DOT_VEL; break;
+				if (!LRlock) {
+			case SDLK_LEFT: mVelX += DOT_VEL; break;
+			case SDLK_RIGHT: mVelX -= DOT_VEL; break;
+				}
 			}
 		}
-	}
+	
 }
 void Player::move(int currentLevel) {
 	
 	if (currentLevel == 1) {
 		//Move the dot up or down
 		mPosY += mVelY;
+		
 
 		//If the dot went too far up or down
 		if ((mPosY < 0) || (mPosY + DOT_HEIGHT > screenH))
@@ -133,6 +140,9 @@ void Player::move(int currentLevel) {
 		if (hoppedOver(currentLevel)) {
 			mPosY -= mVelY;
 		}
+
+		//reset after checking if hopped over
+		mVelY = 0; //reset after jump
 	}
 	else if (currentLevel == 2) {
 		/*std::cout << "Level two motion trigger .Left: " <<std::boolalpha<<left<< std::endl;*/
@@ -230,6 +240,7 @@ bool Player::Collision(int currentLevel) {
 			// need to move hitbox to center
 			if ((mPosY + DOT_HEIGHT) == Obstacle[i].y) {
 				if (((mPosX + DOT_WIDTH / 2) >= Obstacle[i].x) && ((mPosX + DOT_WIDTH / 2) <= Obstacle[i].x + Obstacle[i].w)) {
+					jumpCounter = 0;
 					return true;
 
 				}

@@ -31,7 +31,7 @@ bool Boulder::DropBoulder() {
 	}
 }
 void Boulder :: SpawnNewBoulder() {
-	BoulderRect.x = rand() % (screenW-BOULDERWIDTH);
+	BoulderRect.x = rand() % (screenW-BOULDERWIDTH/2);
 	BoulderRect.y = -BOULDERHEIGHT;
 }
 void Boulder::loadBoulderSprites() {
