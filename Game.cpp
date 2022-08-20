@@ -26,7 +26,7 @@ textureClass AllTexture;
 gameSounds MegaSoundObj;
 
 Mix_Music* gMusic;
-std::stringstream timeInText,oofInText,bouldersDodged,liveCounter; ///for the timer text
+std::stringstream timeInText,oofInText,bouldersDodged,liveCounter,highscoreStream; ///for the timer text
 SDL_Color BlackColor = { 0,0,0 },WhiteColor={0xFF,0xFF,0xFF};
 
 Player P1;
@@ -40,6 +40,8 @@ Game::Game() { //constructor
 	//gfont = NULL;
 	launchedLoadingScreen = false;
 	unlockedLevel = 1;
+	curHighDodge = 0;
+	curHighOof = 10;
 	reset();
 	//WhichMap = FIRSTMAP;
 	////STATIONARY_ANIMATION_FRAMES = 8;
@@ -82,6 +84,15 @@ void Game::reset() {
 	onMenu = true;
 	insideMenu = false;
 	continuestate = 0;
+
+	//highscore init
+	highscoredata.open("C:\\Users\\acer\\source\\repos\\OBHforGit\\Highscores.txt", std::ios::in);
+	highscoredata >> curHighOof >> curHighDodge;
+
+	highscoredata.close();
+	highscoreStream.str("");
+	highscoreStream << "Lowest OOF: " << curHighOof << "      Highest Dodge: " << curHighDodge;
+
 }
 Game::~Game() { //destructor
 	SDL_DestroyWindow(window);
@@ -585,6 +596,23 @@ void Game::GameOver() {
 	AllTexture.render(gRenderer, GAMEOVERTEXT, (screenW - AllTexture.getWidth(GAMEOVERTEXT)) / 2, (screenH - AllTexture.getHeight(GAMEOVERTEXT)) / 2);
 	SDL_RenderPresent(gRenderer);
 	SDL_Delay(5000);
+	
+	//write highscores here
+	highscoredata.open("C:\\Users\\acer\\source\\repos\\OBHforGit\\Highscores.txt", std::ios::in);
+	highscoredata >> curHighOof >> curHighDodge;
+
+	highscoredata.close();
+	highscoreStream.str("");
+	highscoreStream << "Lowest OOF: " << curHighOof << "        Highest Dodge: " << curHighDodge;
+	
+	highscoredata.open("C:\\Users\\acer\\source\\repos\\OBHforGit\\Highscores.txt", std::ios::out);
+	if (oofCount <= curHighOof && boulderNumber >= curHighDodge) {
+		highscoredata << oofCount << " " << boulderNumber;
+		curHighOof = oofCount;
+		curHighDodge = boulderNumber;
+	}
+	highscoredata.close();
+	
 	//master reset
 	P1.reset();
 	BOU.reset();
@@ -676,7 +704,10 @@ void MainMenu::showHighScores() {
 	SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, 255);
 	SDL_RenderClear(gRenderer);
 	AllTexture.loadFromRenderedText(gRenderer, HIGHSCORE, "HIGHSCORE:", WhiteColor, gfont);
-	AllTexture.render(gRenderer, HIGHSCORE, 0, 0);
+	AllTexture.render(gRenderer, HIGHSCORE, 200, 200);
+	AllTexture.loadFromRenderedText(gRenderer, HIGHSCOREVAL, highscoreStream.str().c_str(), WhiteColor, gfont);
+	AllTexture.render(gRenderer, HIGHSCOREVAL, 200, 200 + AllTexture.getHeight(HIGHSCORE) + 50);
+	//highscoreStream.str("");//reset
 	SDL_RenderPresent(gRenderer);
 	SDL_Delay(7000); //freeze this bih for 7 seconds instead of having to deal with bools
 }

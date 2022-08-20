@@ -13,6 +13,7 @@
 #include "Checkpoints.h"
 #include "Boulder.h"
 #include "Mainmenu.h"
+#include <fstream>
 
 
 using namespace std;
@@ -74,6 +75,8 @@ public:
 	bool Started;
 	bool onMenu,insideMenu;
 	int continuestate;
+	std::fstream highscoredata;
+	int curHighOof, curHighDodge;
 };
 
 // Might not need this \|/
