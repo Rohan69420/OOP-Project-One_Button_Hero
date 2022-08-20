@@ -45,6 +45,7 @@ public:
 	int getPlayerYPos();
 
 	void reset();
+	void switchLRlock();
 
 private:
 	//The X and Y offsets of the dot

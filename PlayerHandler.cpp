@@ -302,3 +302,8 @@ int Player::getPlayerXPos() {
 int Player::getPlayerYPos() {
 	return mPosY;
 }
+void Player::switchLRlock() {
+	if (LRlock) {
+		LRlock = !LRlock;
+	}
+}

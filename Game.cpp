@@ -680,3 +680,6 @@ void MainMenu::showHighScores() {
 	SDL_RenderPresent(gRenderer);
 	SDL_Delay(7000); //freeze this bih for 7 seconds instead of having to deal with bools
 }
+void MainMenu::toggleLRVal() {
+	P1.switchLRlock();
+}
