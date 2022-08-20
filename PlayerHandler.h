@@ -51,7 +51,7 @@ private:
 	int mPosX, mPosY;					//<<<	<	<	<	<	< -	-	-	-	-
 
 	//The velocity of the dot
-	int mVelX, mVelY;
+	int mVelX, mVelY,AutoVelX,AutoVelYLvl2;
 
 	SDL_RendererFlip FlipVal;
 
@@ -62,5 +62,7 @@ private:
 	DirectionFacing DF;
 
 	int jumpCounter;
+
+	bool LRlock, left,alreadyTriggered;
 
 };

@@ -124,6 +124,8 @@ int MainMenu::handleUnlockedLevels(SDL_Event &ev,int unlockedLevel) {
                 return 2;
                 break;
             case 3: // completed level2, progress value should be changed to 2
+                //Game reset,newlevel with toggle val
+                  //  P1.toggleLRVal();
                 return 3;
                 //load level3()
                 break;

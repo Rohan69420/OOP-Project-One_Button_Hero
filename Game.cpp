@@ -142,6 +142,9 @@ void Game::gameLoop() {
 	
 		while (gamestate != EXIT) {
 			handleEvents();
+			if (unlockedLevel <= 3) { //if not freeplay need an extra parameter
+				P1.move(currentLevel);
+			}
 			//P1.move(); //what if move is shifted inside handle events?
 			//onmenu locked
 			if (!onMenu) {

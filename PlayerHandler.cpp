@@ -19,6 +19,11 @@ void Player::reset() {
 	mPosY = screenH - 20 - DOT_HEIGHT;
 	mVelX = 0;
 	mVelY = 0;
+	LRlock = true;
+	left = true;
+	AutoVelX = 4;
+	AutoVelYLvl2 = 10;
+	alreadyTriggered = false;
 
 	//facing directions
 	FlipVal = SDL_FLIP_NONE;
@@ -34,8 +39,22 @@ void Player::handleEvent(SDL_Event& e) {
 	{									////////<<<< meaning that even if you are holding key it will still by 10fps vel
 		switch (e.key.keysym.sym)
 		{
-		case SDLK_UP: mVelY -= JUMPDIST; break;
+		case SDLK_UP: mVelY -= JUMPDIST; 
+			if (LRlock) {
+				if (left) {
+					left = false;
+					
+				}
+				else {
+					left = true;
+					
+				}
+				alreadyTriggered = false; //reset
+			}
+			break;
 		//case SDLK_DOWN: mVelY += DOT_VEL; break;
+
+			if (!LRlock) {
 		case SDLK_LEFT: mVelX -= DOT_VEL;
 			if (DF == RIGHT) {
 				DF = LEFT;
@@ -55,6 +74,7 @@ void Player::handleEvent(SDL_Event& e) {
 				FlipVal = SDL_FLIP_NONE;
 			}
 			break;
+			}
 		}
 	}
 	//Release
@@ -62,37 +82,112 @@ void Player::handleEvent(SDL_Event& e) {
 	{
 		switch (e.key.keysym.sym)
 		{
-		case SDLK_UP: mVelY += JUMPDIST; break;
+		case SDLK_UP: mVelY += JUMPDIST;  break;
 		//case SDLK_DOWN: mVelY -= DOT_VEL; break;
+			if (!LRlock) {
 		case SDLK_LEFT: mVelX += DOT_VEL; break;
 		case SDLK_RIGHT: mVelX -= DOT_VEL; break;
+			}
 		}
 	}
 }
 void Player::move(int currentLevel) {
-	//Move the dot left or right
-	mPosX += mVelX;						///<<<<<<<<<< move as much as the velocity
+	
+	if (currentLevel == 1) {
+		//Move the dot up or down
+		mPosY += mVelY;
 
-	//If the dot went too far to the left or right
-	if ((mPosX < 0) || (mPosX + DOT_WIDTH > screenW))		//<<move back nice
-	{
-		//Move back
-		mPosX -= mVelX;
+		//If the dot went too far up or down
+		if ((mPosY < 0) || (mPosY + DOT_HEIGHT > screenH))
+		{
+			//Move back
+			mPosY -= mVelY;
+		}
+
+		if (!LRlock) {
+			//Move the dot left or right
+			mPosX += mVelX;						///<<<<<<<<<< move as much as the velocity
+
+			//If the dot went too far to the left or right
+			if ((mPosX < 0) || (mPosX + DOT_WIDTH > screenW))		//<<move back nice
+			{
+				//Move back
+				mPosX -= mVelX;
+			}
+
+		}
+		else {
+			if (mPosX < 0) {
+				AutoVelX = -AutoVelX;
+				FlipVal = SDL_FLIP_NONE;
+			}
+			else if (mPosX + DOT_WIDTH > screenW) {
+				FlipVal = SDL_FLIP_HORIZONTAL; //flip sprite
+				AutoVelX = -AutoVelX;
+			}
+
+			mPosX += AutoVelX;
+		}
+
+		//PREVENT JUMPING WHERE NOT ALLOWED
+		if (hoppedOver(currentLevel)) {
+			mPosY -= mVelY;
+		}
 	}
+	else if (currentLevel == 2) {
+		std::cout << "Level two motion trigger .Left: " <<std::boolalpha<<left<< std::endl;
+		if (!LRlock) {
+		
+			//Move the dot up or down
+			mPosY += mVelY;
 
-	//Move the dot up or down
-	mPosY += mVelY;
+			//If the dot went too far up or down
+			if ((mPosY < 0) || (mPosY + DOT_HEIGHT > screenH))
+			{
+				//Move back
+				mPosY -= mVelY;
+			}
+			//Move the dot left or right
+			mPosX += mVelX;						///<<<<<<<<<< move as much as the velocity
 
-	//If the dot went too far up or down
-	if ((mPosY < 0) || (mPosY + DOT_HEIGHT > screenH))
-	{
-		//Move back
-		mPosY -= mVelY;
-	}
+			//If the dot went too far to the left or right
+			if ((mPosX < 0) || (mPosX + DOT_WIDTH > screenW))		//<<move back nice
+			{
+				//Move back
+				mPosX -= mVelX;
+			}
 
-	//PREVENT JUMPING WHERE NOT ALLOWED
-	if (hoppedOver(currentLevel)) { 
-		mPosY -= mVelY;
+			
+		}
+		else {
+			std::cout << "inside !lrlock" << std::endl;
+			if (left) {
+				mPosX -= AutoVelYLvl2;
+				if (!alreadyTriggered) {
+					FlipVal = SDL_FLIP_HORIZONTAL;
+					alreadyTriggered = true;
+				}
+				std::cout << "AutoVel Triggered" << std::endl;
+			}
+			else {
+				if (!alreadyTriggered) {
+					FlipVal = SDL_FLIP_NONE;
+					alreadyTriggered = true;
+				}
+				mPosX += AutoVelYLvl2;
+			}
+
+
+
+			if (mPosX < 0) 		//<<move back nice
+			{
+				//Move back
+				mPosX += AutoVelYLvl2;
+			}
+			else if (mPosX + DOT_WIDTH > screenW) {
+				mPosX -= AutoVelYLvl2;
+			}
+		}
 	}
 }
 bool Player::hoppedOver(int currentLevel) {
