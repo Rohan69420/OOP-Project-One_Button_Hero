@@ -21,4 +21,5 @@ public:
     int handleUnlockedLevels(SDL_Event &e,int unlockedLevel);
     void showHighScores();
     void toggleLRVal();
+    void changeLevel(int level);
 };

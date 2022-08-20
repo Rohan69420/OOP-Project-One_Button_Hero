@@ -135,7 +135,7 @@ void Player::move(int currentLevel) {
 		}
 	}
 	else if (currentLevel == 2) {
-		std::cout << "Level two motion trigger .Left: " <<std::boolalpha<<left<< std::endl;
+		/*std::cout << "Level two motion trigger .Left: " <<std::boolalpha<<left<< std::endl;*/
 		if (!LRlock) {
 		
 			//Move the dot up or down
@@ -160,14 +160,14 @@ void Player::move(int currentLevel) {
 			
 		}
 		else {
-			std::cout << "inside !lrlock" << std::endl;
+			/*std::cout << "inside !lrlock" << std::endl;*/
 			if (left) {
 				mPosX -= AutoVelYLvl2;
 				if (!alreadyTriggered) {
 					FlipVal = SDL_FLIP_HORIZONTAL;
 					alreadyTriggered = true;
 				}
-				std::cout << "AutoVel Triggered" << std::endl;
+				/*std::cout << "AutoVel Triggered" << std::endl;*/
 			}
 			else {
 				if (!alreadyTriggered) {

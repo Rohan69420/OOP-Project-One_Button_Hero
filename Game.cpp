@@ -253,7 +253,7 @@ void Game::handleEvents() {
 				else if(continuestate==3){
 					onMenu = false; //basically copied from first case
 					insideMenu = false;
-					currentLevel = 2; //pray this workey;
+					currentLevel = 1; //pray this workey;
 					P1.ResetPos(currentLevel);
 					draw();
 					//plus unlock the left right keys boolean here
@@ -683,3 +683,21 @@ void MainMenu::showHighScores() {
 void MainMenu::toggleLRVal() {
 	P1.switchLRlock();
 }
+//void MainMenu::changeLevel(int level) {
+//	Game::changeToLevel(level);
+//}
+
+//void Game::changeToLevel(int level) {
+//	if(level==1){
+//		onMenu = false; //these setting to go to levels
+//		insideMenu = false;
+//		currentLevel=1;
+//		draw();
+//	}
+//	if (level == 2) {
+//		onMenu = false; //these setting to go to levels
+//		insideMenu = false;
+//		currentLevel = 2;
+//		LevelTransition();
+//	}
+//}

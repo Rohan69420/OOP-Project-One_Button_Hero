@@ -49,6 +49,8 @@ public:
 	void RenderAnimatedBoulder();
 	void GameOver();
 	void reset();
+	/*void changeToLevel(int level);*/
+
 	SDL_Window* window;
 	SDL_Renderer* renderer;
 	SDL_Surface* screenSurface;
