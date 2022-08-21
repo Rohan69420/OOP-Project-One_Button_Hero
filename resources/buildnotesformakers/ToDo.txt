@@ -1,0 +1,19 @@
+>> Add a loading screen(On progress)
+
+>>Fix the proportion using clips
+
+>>Use mixer to load some tunes. 
+Details: 
+1. Coin pick up sound once the progress bar is full
+2. Welcome tune, infinity loop in homescreen
+3. Mario pipe transition sound type transition music for game transition
+
+>>Need to configure system sleep, thread sleep (configured!)
+
+>>Need to configure, window resized handler, recommend we resize before proceeding to the game
+
+>>Working on sound and texture as seperate class, should combine it into a single class?? (seperate sound class but global variable made )
+
+>>Create a enum to know which stage of map we are in so that we can have varying mouse positions (dont worry about oop rn)
+
+>>Add a resizing feature to the welcome screen.

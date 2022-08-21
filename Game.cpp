@@ -418,7 +418,7 @@ void Game::loadWelcomeText() {
 
 }
 void Game::LoadAppIcon() {
-	SDL_SetWindowIcon(window, IMG_Load("images/ICON.png"));
+	SDL_SetWindowIcon(window, IMG_Load("resources/images/ICON.png"));
 	std::cout << "Load app icon launched" << std::endl;
 	LoadingScreen();
 	//loading screen
@@ -457,7 +457,7 @@ void Game::LoadingScreen() {
 bool Game::loadMedia() {
 
 	//fonts 
-	gfont = TTF_OpenFont("ka1.ttf", 72); //ptsize is size of font 
+	gfont = TTF_OpenFont("resources/fonts/ka1.ttf", 72); //ptsize is size of font 
 
 	if (gfont == NULL) {
 		std::cout << "Failed to load the ttf file. Error code" << TTF_GetError() << std::endl;
@@ -468,7 +468,7 @@ bool Game::loadMedia() {
 	if (!AllTexture.loadFromRenderedText(gRenderer,WELCOMEOBH, "Welcome to One Button Hero", textColor, gfont)) {
 		std::cout << "Failed to render texture." << std::endl;
 	}
-	gfont = TTF_OpenFont("ka1.ttf", 48);
+	gfont = TTF_OpenFont("resources/fonts/ka1.ttf", 48);
 	if (!AllTexture.loadFromRenderedText(gRenderer,PRESSSTART, "Press any button to start.", textColor, gfont)) {
 		std::cout << "Failed to render texture." << std::endl;
 	}
@@ -489,37 +489,37 @@ bool Game::loadMedia() {
 
 	//images
 
-	if (!AllTexture.loadFromFile(gRenderer, BIGLOGO, "images/LOGO.png")) {
+	if (!AllTexture.loadFromFile(gRenderer, BIGLOGO, "resources/images/LOGO.png")) {
 		std::cout << "Failed to load the biglogo image!" << std::endl;
 	}
 
-	if (!AllTexture.loadFromFile(gRenderer,GSPRITESHEETTEXTURE,"nicepng60pxw.png"))
+	if (!AllTexture.loadFromFile(gRenderer,GSPRITESHEETTEXTURE,"resources/images/sprites/nicepng60pxw.png"))
 	{
 		std::cout<<"Failed to load walking animation texture!\n"<<std::endl;
 		//success = false;
 	}
-	if (!AllTexture.loadFromFile(gRenderer, WALLTEXTURE, "WallAtMyExpense.png")) {
+	if (!AllTexture.loadFromFile(gRenderer, WALLTEXTURE, "resources/textures/WallAtMyExpense.png")) {
 		std::cout << "Failed to load the wall texture!" << std::endl;
 	}
-	if (!AllTexture.loadFromFile(gRenderer, LAVA, "Lava.png")) {
+	if (!AllTexture.loadFromFile(gRenderer, LAVA, "resources/textures/Lava.png")) {
 		std::cout << "Failed to load the lava texture!" << std::endl;
 	}
-	if (!AllTexture.loadFromFile(gRenderer, CHECKCOIN, "checkcoin1.png")) {
+	if (!AllTexture.loadFromFile(gRenderer, CHECKCOIN, "resources/images/sprites/checkcoin1.png")) {
 		std::cout << "Failed to load the coin sprite" << std::endl;
 	}
-	if (!AllTexture.loadFromFile(gRenderer, LEVELTWOMAP, "lvl2map.png")) {
+	if (!AllTexture.loadFromFile(gRenderer, LEVELTWOMAP, "resources/maps/lvl2map.png")) {
 		std::cout << "Failed to load level two map" << std::endl;
 	}
-	if (!AllTexture.loadFromFile(gRenderer, BOULDER, "boulder.png")) {
+	if (!AllTexture.loadFromFile(gRenderer, BOULDER, "resources/images/sprites/boulder.png")) {
 		std::cout << "Failed to load boulder spritesheet" << std::endl;
 	}
-	if (!AllTexture.loadFromFile(gRenderer, MAINMENUANIM, "Menu.png")) {
+	if (!AllTexture.loadFromFile(gRenderer, MAINMENUANIM, "resources/images/sprites/Menu.png")) {
 		std::cout << "Failed to load the main menu animated texture" << std::endl;
 	}
-	if (!AllTexture.loadFromFile(gRenderer, LEVELUNLOCKED, "progress.png")) {
+	if (!AllTexture.loadFromFile(gRenderer, LEVELUNLOCKED, "resources/images/sprites/progress.png")) {
 		std::cout<<"Failed to load the level unlockedscreen"<<std::endl;
 	}
-	if (!AllTexture.loadFromFile(gRenderer, FIRSTMAP, "Map1.png")) {
+	if (!AllTexture.loadFromFile(gRenderer, FIRSTMAP, "resources/maps/Map1.png")) {
 		std::cout << "Failed to load the first background map image" << std::endl;
 	}
 	else
@@ -598,7 +598,7 @@ void Game::GameOver() {
 	SDL_Delay(5000);
 	
 	//write highscores here
-	highscoredata.open("C:\\Users\\acer\\source\\repos\\OBHforGit\\Highscores.txt", std::ios::in);
+	highscoredata.open("C:\\Users\\acer\\source\\Highscores.txt", std::ios::in);
 	highscoredata >> curHighOof >> curHighDodge;
 
 	highscoredata.close();
@@ -629,7 +629,7 @@ bool gameSounds::initSounds() {
 	return true;
 }
 bool gameSounds::loadAllSounds() {
-	gMusic = Mix_LoadMUS("sounds/softbeat/soft-beat.mp3");
+	gMusic = Mix_LoadMUS("resources/sounds/softbeat/soft-beat.mp3");
 	if (gMusic == NULL) {
 		std::cout << "Could not load global music. Error code: " << Mix_GetError() << std::endl;
 	}
