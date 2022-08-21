@@ -16,7 +16,7 @@ Player::Player() { //need to overload for different levels ig, position wise
 }
 void Player::reset() {
 	mPosX = 0;
-	mPosY = screenH - 20 - DOT_HEIGHT;
+	mPosY = screenH - 20 - CHAR_HEIGHT;
 	mVelX = 0;
 	mVelY = 0;
 	LRlock = true;
@@ -105,7 +105,7 @@ void Player::move(int currentLevel) {
 		
 
 		//If the dot went too far up or down
-		if ((mPosY < 0) || (mPosY + DOT_HEIGHT > screenH))
+		if ((mPosY < 0) || (mPosY + CHAR_HEIGHT > screenH))
 		{
 			//Move back
 			mPosY -= mVelY;
@@ -116,7 +116,7 @@ void Player::move(int currentLevel) {
 			mPosX += mVelX;						///<<<<<<<<<< move as much as the velocity
 
 			//If the dot went too far to the left or right
-			if ((mPosX < 0) || (mPosX + DOT_WIDTH > screenW))		//<<move back nice
+			if ((mPosX < 0) || (mPosX + CHAR_WIDTH > screenW))		//<<move back nice
 			{
 				//Move back
 				mPosX -= mVelX;
@@ -128,7 +128,7 @@ void Player::move(int currentLevel) {
 				AutoVelX = -AutoVelX;
 				FlipVal = SDL_FLIP_NONE;
 			}
-			else if (mPosX + DOT_WIDTH > screenW) {
+			else if (mPosX + CHAR_WIDTH > screenW) {
 				FlipVal = SDL_FLIP_HORIZONTAL; //flip sprite
 				AutoVelX = -AutoVelX;
 			}
@@ -152,7 +152,7 @@ void Player::move(int currentLevel) {
 			mPosY += mVelY;
 
 			//If the dot went too far up or down
-			if ((mPosY < 0) || (mPosY + DOT_HEIGHT > screenH))
+			if ((mPosY < 0) || (mPosY + CHAR_HEIGHT > screenH))
 			{
 				//Move back
 				mPosY -= mVelY;
@@ -161,7 +161,7 @@ void Player::move(int currentLevel) {
 			mPosX += mVelX;						///<<<<<<<<<< move as much as the velocity
 
 			//If the dot went too far to the left or right
-			if ((mPosX < 0) || (mPosX + DOT_WIDTH > screenW))		//<<move back nice
+			if ((mPosX < 0) || (mPosX + CHAR_WIDTH > screenW))		//<<move back nice
 			{
 				//Move back
 				mPosX -= mVelX;
@@ -194,7 +194,7 @@ void Player::move(int currentLevel) {
 				//Move back
 				mPosX += AutoVelYLvl2;
 			}
-			else if (mPosX + DOT_WIDTH > screenW) {
+			else if (mPosX + CHAR_WIDTH > screenW) {
 				mPosX -= AutoVelYLvl2;
 			}
 		}
@@ -219,14 +219,62 @@ bool Player::hoppedOver(int currentLevel) {
 	}
 	return false;
 }
+void Player::move() {
 
+	
+		//Move the dot up or down
+		mPosY += mVelY;
+
+
+		//If the dot went too far up or down
+		if ((mPosY < 0) || (mPosY + CHAR_HEIGHT > screenH))
+		{
+			//Move back
+			mPosY -= mVelY;
+		}
+
+		if (!LRlock) {
+			//Move the dot left or right
+			mPosX += mVelX;						///<<<<<<<<<< move as much as the velocity
+
+			//If the dot went too far to the left or right
+			if ((mPosX < 0) || (mPosX + CHAR_WIDTH > screenW))		//<<move back nice
+			{
+				//Move back
+				mPosX -= mVelX;
+			}
+
+		}
+		else {
+			if (mPosX < 0) {
+				AutoVelX = -AutoVelX;
+				FlipVal = SDL_FLIP_NONE;
+			}
+			else if (mPosX + CHAR_WIDTH > screenW) {
+				FlipVal = SDL_FLIP_HORIZONTAL; //flip sprite
+				AutoVelX = -AutoVelX;
+			}
+
+			mPosX += AutoVelX;
+		
+
+		//PREVENT JUMPING WHERE NOT ALLOWED
+		if (hoppedOver(1)) {
+			mPosY -= mVelY;
+		}
+
+		//reset after checking if hopped over
+		mVelY = 0; //reset after jump
+	}
+	
+}
 void Player::positiveGravity(int currentLevel) {
 	if (!Collision(currentLevel)) {
 		mPosY += Gravity;
 	}
 }
 bool Player::Collision(int currentLevel) {
-	if ((mPosX < 0) || (mPosY < 0) || (mPosX + DOT_WIDTH) > screenW || (mPosY + DOT_HEIGHT) > screenH) {
+	if ((mPosX < 0) || (mPosY < 0) || (mPosX + CHAR_WIDTH) > screenW || (mPosY + CHAR_HEIGHT) > screenH) {
 		return true;
 	}
 
@@ -238,8 +286,8 @@ bool Player::Collision(int currentLevel) {
 			//need to start form the top not bottom
 
 			// need to move hitbox to center
-			if ((mPosY + DOT_HEIGHT) == Obstacle[i].y) {
-				if (((mPosX + DOT_WIDTH / 2) >= Obstacle[i].x) && ((mPosX + DOT_WIDTH / 2) <= Obstacle[i].x + Obstacle[i].w)) {
+			if ((mPosY + CHAR_HEIGHT) == Obstacle[i].y) {
+				if (((mPosX + CHAR_WIDTH / 2) >= Obstacle[i].x) && ((mPosX + CHAR_WIDTH / 2) <= Obstacle[i].x + Obstacle[i].w)) {
 					jumpCounter = 0;
 					return true;
 
@@ -249,8 +297,8 @@ bool Player::Collision(int currentLevel) {
 	}
 	if (currentLevel == 2) {
 		//insert level 2 platform collisions here
-		if ((mPosY + DOT_HEIGHT) == Obstacle[LVLTWOGOODPLATFORMTHREE].y) {
-			if (((mPosX + DOT_WIDTH / 2) >= Obstacle[LVLTWOGOODPLATFORMTHREE].x) && ((mPosX + DOT_WIDTH / 2) <= Obstacle[LVLTWOGOODPLATFORMTHREE].x + Obstacle[LVLTWOGOODPLATFORMTHREE].w)) {
+		if ((mPosY + CHAR_HEIGHT) == Obstacle[LVLTWOGOODPLATFORMTHREE].y) {
+			if (((mPosX + CHAR_WIDTH / 2) >= Obstacle[LVLTWOGOODPLATFORMTHREE].x) && ((mPosX + CHAR_WIDTH / 2) <= Obstacle[LVLTWOGOODPLATFORMTHREE].x + Obstacle[LVLTWOGOODPLATFORMTHREE].w)) {
 				return true;
 
 			}
@@ -261,8 +309,8 @@ bool Player::Collision(int currentLevel) {
 bool Player::BadCollision(int currentLevel) {
 	if (currentLevel == 1) {
 		for (int i = BADPLATFORMONE;i <= FLOORTWOBADPLATFORMTWO;i++) {
-			if ((mPosY + DOT_HEIGHT) == Obstacle[i].y) {
-				if (((mPosX + DOT_WIDTH / 2) >= Obstacle[i].x) && ((mPosX + DOT_WIDTH / 2) <= Obstacle[i].x + Obstacle[i].w)) {
+			if ((mPosY + CHAR_HEIGHT) == Obstacle[i].y) {
+				if (((mPosX + CHAR_WIDTH / 2) >= Obstacle[i].x) && ((mPosX + CHAR_WIDTH / 2) <= Obstacle[i].x + Obstacle[i].w)) {
 					return true;
 				}
 			}
@@ -300,11 +348,11 @@ void Player::ResetPos(int currentLevel) {
 	//first level reset
 	if (currentLevel == 1) {
 		mPosX = 0;
-		mPosY = screenH - 20 - DOT_HEIGHT;
+		mPosY = screenH - 20 - CHAR_HEIGHT;
 	}
 	if (currentLevel == 2) {
 		mPosX = 0;
-		mPosY = Obstacle[LVLTWOGOODPLATFORMTHREE].y-DOT_HEIGHT;
+		mPosY = Obstacle[LVLTWOGOODPLATFORMTHREE].y-CHAR_HEIGHT;
 	}
 }
 int Player::getPlayerXPos() {

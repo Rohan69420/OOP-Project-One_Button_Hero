@@ -7,8 +7,8 @@
 class Player : public SolidObjects{ //inheritance
 public:
 	//The dimensions of the dot
-	static const int DOT_WIDTH = SPRITEW;
-	static const int DOT_HEIGHT = SPRITEH;
+	static const int CHAR_WIDTH = SPRITEW;
+	static const int CHAR_HEIGHT = SPRITEH;
 
 	//Maximum axis velocity of the dot
 	static const int DOT_VEL = 10;
@@ -17,11 +17,12 @@ public:
 	//Initializes the variables
 	Player();
 
-	//Takes key presses and adjusts the dot's velocity
-	void handleEvent(SDL_Event& e);					///<<<<<< updated event handler
+	//Takes key presses and adjusts the character's velocity
+	void handleEvent(SDL_Event& e);					
 
 	//Moves the dot
-	void move(int currentLevel);	///<<<<<<<<<	-	-	-	-	-	-	-		-
+	void move(int currentLevel);	
+	void move();
 
 	//Shows the dot on the screen
 	void render(SDL_Renderer *gRenderer,SDL_Rect *);
